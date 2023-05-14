@@ -28,6 +28,28 @@ compileJava {
     options.incremental = true
 }
 
+task createManifest {
+    doLast {
+        def manifestDir = "${outputDir}/META-INF"
+        file(manifestDir).mkdirs()
+
+        def manifestFile = file("${manifestDir}/MANIFEST.MF")
+        manifestFile.createNewFile()
+
+        def manifestContent = """
+            Manifest-Version: 1.0
+            Main-Class: fr.iamacat.iamacatblockgame.Main
+        """.stripIndent()
+
+        manifestFile.write(manifestContent)
+    }
+}
+
+jar {
+    dependsOn createManifest
+    from tasks.createManifest.manifestFile
+}
+
 // # todo make it work for x86 x64 linux,windows,mac
 def getNativeFolder() {
     String osName = System.getProperty("os.name").toLowerCase()
