@@ -2,7 +2,8 @@
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-build/lib
+/build/
+
 
 ### Eclipse ###
 .apt_generated
@@ -31,3 +32,34 @@ bin/
 build/libs/IamacatBlockGame.jar
 build/libs/IamacatBlockGame.jar
 build/distributions/IamacatBlockGame.zip
+build/distributions/IamacatBlockGame.tar
+build/tmp/compileJava/previous-compilation-data.bin
+build/tmp/.cache/expanded/expanded.lock
+build/scripts/IamacatBlockGame
+build/libs/start.sh
+build/tmp/jar/MANIFEST.MF
+build/tmp/compileJava/previous-compilation-data.bin
+build/distributions/IamacatBlockGame.tar
+build/distributions/IamacatBlockGame.zip
+build/libs/IamacatBlockGame.jar
+build/libs/start.sh
+build/scripts/IamacatBlockGame
+build/scripts/IamacatBlockGame.bat
+build/tmp/jar/MANIFEST.MF
+build/tmp/compileJava/previous-compilation-data.bin
+build/distributions/IamacatBlockGame.tar
+build/distributions/IamacatBlockGame.zip
+build/libs/IamacatBlockGame.jar
+build/libs/start.sh
+build/scripts/IamacatBlockGame
+build/scripts/IamacatBlockGame.bat
+*.MF
+build/tmp/jar/MANIFEST.MF
+build/tmp/jar/MANIFEST.MF
+build/distributions/IamacatBlockGame.tar
+build/libs/start.sh
+build/libs/start.sh
+build/libs/start.sh
+build/distributions/IamacatBlockGame.tar
+build/libs/start.sh
+build/libs/start.sh

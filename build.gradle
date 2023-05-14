@@ -16,7 +16,22 @@ dependencies {
     implementation 'org.lwjgl:lwjgl:3.2.3'
     implementation 'org.lwjgl:lwjgl-glfw:3.2.3'
     implementation 'org.lwjgl:lwjgl-opengl:3.2.3'
+    implementation 'org.lwjgl:lwjgl-assimp:3.2.3'
+    implementation 'org.lwjgl:lwjgl-openal:3.2.3'
+    implementation 'org.lwjgl:lwjgl-stb:3.2.3'
 }
+
+jar {
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes 'Main-Class': 'fr.iamacat.iamacatblockgame.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+
 
 application {
     mainClassName = 'fr.iamacat.iamacatblockgame.Main'
@@ -28,29 +43,6 @@ compileJava {
     options.incremental = true
 }
 
-task createManifest {
-    doLast {
-        def manifestDir = "${outputDir}/META-INF"
-        file(manifestDir).mkdirs()
-
-        def manifestFile = file("${manifestDir}/MANIFEST.MF")
-        manifestFile.createNewFile()
-
-        def manifestContent = """
-            Manifest-Version: 1.0
-            Main-Class: fr.iamacat.iamacatblockgame.Main
-        """.stripIndent()
-
-        manifestFile.write(manifestContent)
-    }
-}
-
-jar {
-    dependsOn createManifest
-    from tasks.createManifest.manifestFile
-}
-
-// # todo make it work for x86 x64 linux,windows,mac
 def getNativeFolder() {
     String osName = System.getProperty("os.name").toLowerCase()
 
