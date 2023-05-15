@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
 import javax.imageio.ImageIO;
@@ -128,7 +129,7 @@ public class Main {
         }
     }
     private void updateTitleScreen() {
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL46.glClear(GL11.GL_COLOR_BUFFER_BIT);
         titleScreen.update();
         GLFW.glfwPollEvents();
     }

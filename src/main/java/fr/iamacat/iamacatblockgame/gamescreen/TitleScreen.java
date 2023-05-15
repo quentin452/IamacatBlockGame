@@ -3,10 +3,7 @@ package fr.iamacat.iamacatblockgame.gamescreen;
 import fr.iamacat.iamacatblockgame.textures.TextureLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -114,29 +111,29 @@ public class TitleScreen {
         GL30.glBindVertexArray(vaoID);
 
         // Create the vertex VBO and bind it
-        vertexVBOID = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexVBOID);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip(), GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+        vertexVBOID = GL46.glGenBuffers();
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices.length).put(vertices).flip(), GL46.GL_STATIC_DRAW);
+        GL46.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
 
         // Create the texture coordinate VBO and bind it
-        texCoordVBOID = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, texCoordVBOID);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(texCoords.length).put(texCoords).flip(), GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+        texCoordVBOID = GL46.glGenBuffers();
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(texCoords.length).put(texCoords).flip(), GL46.GL_STATIC_DRAW);
+        GL46.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
 
         // Create the index VBO and bind it
-        indexVBOID = GL15.glGenBuffers();
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, BufferUtils.createIntBuffer(indices.length).put(indices).flip(), GL15.GL_STATIC_DRAW);
+        indexVBOID = GL46.glGenBuffers();
+        GL46.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+        GL46.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, BufferUtils.createIntBuffer(indices.length).put(indices).flip(), GL46.GL_STATIC_DRAW);
 
         // Unbind the VAO
-        GL30.glBindVertexArray(0);
+        GL46.glBindVertexArray(0);
     }
 
     public void update() {
         // Perform game logic and rendering for the title screen
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);
         renderTitleScreen();
         renderButtons();
         handleButtonClicks();
@@ -146,42 +143,43 @@ public class TitleScreen {
 
     private void renderTitleScreen() {
         // Enable alpha blending
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL46.glEnable(GL46.GL_BLEND);
+        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
 
-        // Set the clear color to transparent (black with alpha = 0)
-        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        // Set the clear color to a visible color (black with alpha = 1)
+        GL46.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Clear the color buffer
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        GL46.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // Black with full alpha (opaque)
+        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);
 
         // Bind the texture and VAO
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, titleScreenTextureID);
-        GL30.glBindVertexArray(vaoID);
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, titleScreenTextureID);
+        GL46.glBindVertexArray(vaoID);
 
         // Enable vertex attribute arrays
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
+        GL46.glEnableVertexAttribArray(0);
+        GL46.glEnableVertexAttribArray(1);
 
         // Draw the quad
-        GL11.glDrawElements(GL11.GL_TRIANGLES, 6, GL11.GL_UNSIGNED_INT, 0);
+        GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
 
         // Disable vertex attribute arrays
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
+        GL46.glDisableVertexAttribArray(0);
+        GL46.glDisableVertexAttribArray(1);
 
         // Unbind the texture and VAO
-        GL30.glBindVertexArray(0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL46.glBindVertexArray(0);
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
 
         // Disable alpha blending
-        GL11.glDisable(GL11.GL_BLEND);
+        GL46.glDisable(GL46.GL_BLEND);
     }
 
     private void renderButtons() {
         // Render the buttons on the title screen
         for (Button button : buttons) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, button.getTextureID());
+            GL46.glBindTexture(GL46.GL_TEXTURE_2D, button.getTextureID());
             button.render();
         }
     }
