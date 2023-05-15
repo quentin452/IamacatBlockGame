@@ -45,8 +45,10 @@ public class TitleScreen {
         int playButtonTextureID = TextureLoader.loadTexture(playButtonTexturePath);
         String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png"; // #todo
         int quitButtonTextureID = TextureLoader.loadTexture(quitButtonTexturePath);
-        Button playButton = new Button("Jouer", 100, 100, playButtonTextureID);
-        Button quitButton = new Button("Quitter", 100, 200, quitButtonTextureID);
+        int buttonWidth = 100; // Set the desired width for the buttons
+        int buttonHeight = 50; // Set the desired height for the buttons
+        Button playButton = new Button("Jouer", 100, 100, buttonWidth, buttonHeight, playButtonTextureID);
+        Button quitButton = new Button("Quitter", 100, 200, buttonWidth, buttonHeight, quitButtonTextureID);
         buttons.add(playButton);
         buttons.add(quitButton);
     }
