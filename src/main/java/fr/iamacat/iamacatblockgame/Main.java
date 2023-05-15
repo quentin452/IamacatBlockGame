@@ -45,18 +45,20 @@ public class Main {
     }
 
     private void loop() {
-        while (!GLFW.glfwWindowShouldClose(window) && showTitleScreen) {
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            titleScreen.update();
-            GLFW.glfwPollEvents();
-        }
-
         while (!GLFW.glfwWindowShouldClose(window)) {
-            // Perform game logic and rendering for the main game
-            GLFW.glfwPollEvents();
+            if (showTitleScreen) {
+                updateTitleScreen();
+            } else {
+                // Perform game logic and rendering for the main game
+                GLFW.glfwPollEvents();
+            }
         }
     }
-
+    private void updateTitleScreen() {
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        titleScreen.update();
+        GLFW.glfwPollEvents();
+    }
     private void cleanup() {
         // Clean up GLFW resources
         GLFW.glfwDestroyWindow(window);
