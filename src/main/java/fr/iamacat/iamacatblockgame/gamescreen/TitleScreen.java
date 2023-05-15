@@ -109,10 +109,10 @@ public class TitleScreen {
         vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
 
-        // Create the vertex VBO and bind it
+// Create the vertex VBO and bind it
         vertexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoords, GL46.GL_STATIC_DRAW);
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, vertices, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
 
         // Create the texture coordinate VBO and bind it
