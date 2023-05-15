@@ -1,6 +1,5 @@
 package fr.iamacat.iamacatblockgame;
 
-import fr.iamacat.iamacatblockgame.gamescreen.GameWindow;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
