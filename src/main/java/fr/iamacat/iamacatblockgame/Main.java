@@ -41,12 +41,11 @@ public class Main {
 
     private void init() {
         // Initialize GLFW and create the window
-
         GLFW.glfwInit();
         window = GLFW.glfwCreateWindow(1280, 720, "IamACat Block Game", 0, 0);
 
         // Set window icon
-         setWindowIcon();
+        setWindowIcon();
 
         GLFW.glfwMakeContextCurrent(window);
         GLFW.glfwSwapInterval(1);
@@ -62,8 +61,10 @@ public class Main {
                 }
             }
         });
-       GL.createCapabilities();
+
+        GL.createCapabilities(); // Create the OpenGL context after making it current
     }
+
 
     private void setWindowIcon() {
         // Load the icon image
