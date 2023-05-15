@@ -10,9 +10,13 @@ repositories {
     maven { url "https://jitpack.io" }
     maven { url "https://nifty-gui.sourceforge.net/nifty-maven-repo" }
 }
+compileJava {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
 
 dependencies {
-    runtimeOnly files("src/main/resources/native/${getNativeFolder()}")
+    implementation files("src/main/resources/native/${getNativeFolder()}")
     implementation 'org.lwjgl:lwjgl:3.2.3'
     implementation 'org.lwjgl:lwjgl-glfw:3.2.3'
     implementation 'org.lwjgl:lwjgl-opengl:3.2.3'
@@ -31,16 +35,8 @@ jar {
     }
 }
 
-
-
 application {
     mainClassName = 'fr.iamacat.iamacatblockgame.Main'
-}
-
-compileJava {
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
-    options.incremental = true
 }
 
 def getNativeFolder() {

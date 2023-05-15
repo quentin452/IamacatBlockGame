@@ -15,13 +15,10 @@ public class Main {
     }
 
     private void init() {
-        String libraryPath = "native/linux";
-        System.setProperty("java.library.path", libraryPath);
-
         GLFW.glfwInit();
 
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, GLFW.GLFW_TRUE);
 
@@ -44,6 +41,7 @@ public class Main {
 
             // Render your game here using Modern OpenGL API
 
+            // Swap buffers and poll events
             GLFW.glfwSwapBuffers(window);
             GLFW.glfwPollEvents();
         }
