@@ -68,7 +68,7 @@ public class Main {
         GL11.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     }
     private void setWindowIcon() {
-        // Load icon image using STBImage or any other image loading library
+        // Load the icon image
         ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png");
 
         // Create GLFWImage object for the icon
