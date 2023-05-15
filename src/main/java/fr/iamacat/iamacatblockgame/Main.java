@@ -43,7 +43,6 @@ public class Main {
     private void init() {
         // Initialize GLFW and create the window
 
-
         GLFW.glfwInit();
         window = GLFW.glfwCreateWindow(1280, 720, "IamACat Block Game", 0, 0);
 

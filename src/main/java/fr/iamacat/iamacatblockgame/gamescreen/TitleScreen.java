@@ -40,8 +40,15 @@ public class TitleScreen {
 
     private void loadTitleScreenTexture() {
         String titleScreenTexturePath = "textures/gamescreen/titlescreen.png";
-        titleScreenTextureID = loadTextureFromResource(titleScreenTexturePath);
+
+        try {
+            titleScreenTextureID = loadTextureFromResource(titleScreenTexturePath);
+        } catch (Exception e) {
+            System.err.println("Failed to load title screen texture: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
 
     private void createButtons() {
         //Create buttons and add them to the button list
@@ -156,7 +163,6 @@ public class TitleScreen {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-
     private void renderButtons() {
         // Render the buttons on the title screen
         for (Button button : buttons) {
@@ -164,8 +170,6 @@ public class TitleScreen {
             button.render();
         }
     }
-
-
 
     private void handleButtonClicks() {
         // Handle button clicks
@@ -191,6 +195,4 @@ public class TitleScreen {
             }
         }
     }
-
-
 }
