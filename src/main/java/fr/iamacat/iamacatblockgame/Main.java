@@ -1,6 +1,8 @@
 package fr.iamacat.iamacatblockgame;
 
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
@@ -13,12 +15,19 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 public class Main {
-
+    private static final Logger logger = LogManager.getLogger(Main.class);
     private long window;
     private boolean showTitleScreen;
     private TitleScreen titleScreen;
 
+    public static void main(String[] args) {
+        Log4jConfiguration.configure();
+        logger.info("Starting the game...");
+        new Main().run();
+    }
+
     public void run() {
+        logger.debug("Running the game...");
         init();
         showTitleScreen = true;
         titleScreen = new TitleScreen(window);
@@ -54,7 +63,7 @@ public class Main {
     }
     private void setWindowIcon() {
         // Load icon image using STBImage or any other image loading library
-        ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png"); // todo
+        ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png"); // #todo
 
         // Create GLFWImage object for the icon
         GLFWImage.Buffer icons = GLFWImage.create(1);
@@ -99,9 +108,5 @@ public class Main {
         // Clean up GLFW resources
         GLFW.glfwDestroyWindow(window);
         GLFW.glfwTerminate();
-    }
-
-    public static void main(String[] args) {
-        new Main().run();
     }
 }

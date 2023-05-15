@@ -8,13 +8,16 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TitleScreen {
-
+    private static final Logger logger = LogManager.getLogger(TitleScreen.class);
     private long window;
     private List<Button> buttons;
     private int titleScreenTextureID;
@@ -32,15 +35,15 @@ public class TitleScreen {
     }
 
     private void loadTitleScreenTexture() {
-        String titleScreenTexturePath = "textures/gamescreen/titlescreen.png"; // todo
+        String titleScreenTexturePath = "textures/gamescreen/titlescreen.png"; // #todo
         titleScreenTextureID = TextureLoader.loadTexture(titleScreenTexturePath);
     }
 
     private void createButtons() {
         // Create buttons and add them to the button list
-        String playButtonTexturePath = "textures/gamescreen/button/playbutton.png"; // todo
+        String playButtonTexturePath = "textures/gamescreen/button/playbutton.png"; // #todo
         int playButtonTextureID = TextureLoader.loadTexture(playButtonTexturePath);
-        String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png"; // todo
+        String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png"; // #todo
         int quitButtonTextureID = TextureLoader.loadTexture(quitButtonTexturePath);
         Button playButton = new Button("Jouer", 100, 100, playButtonTextureID);
         Button quitButton = new Button("Quitter", 100, 200, quitButtonTextureID);
@@ -97,6 +100,7 @@ public class TitleScreen {
     }
 
     public void update() {
+        logger.info("Updating title screen...");
         // Perform game logic and rendering for the title screen
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         renderTitleScreen();
