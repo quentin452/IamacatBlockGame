@@ -1,6 +1,5 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL46;
 
 public class Button {

@@ -1,7 +1,6 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
 import fr.iamacat.iamacatblockgame.textures.TextureLoader;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 
@@ -12,8 +11,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +46,9 @@ public class TitleScreen {
             BufferedImage image = ImageIO.read(inputStream);
             TextureLoader textureLoader = new TextureLoader();
             titleScreenTextureID = textureLoader.loadTexture(image);
+            System.out.println("Title screen texture ID: " + titleScreenTextureID);
 
-            System.out.println("Texture loaded successfully. Texture ID: " + titleScreenTextureID);
         } catch (IOException e) {
-            System.err.println("Failed to load texture: " + titleScreenTexturePath);
-            e.printStackTrace();
             throw new RuntimeException("Failed to load texture: " + titleScreenTexturePath, e);
         }
     }
@@ -88,6 +83,7 @@ public class TitleScreen {
     }
 
     private void setupMesh() {
+
         float[] vertices = {
                 -1.0f, -1.0f, 0.0f,
                 1.0f, -1.0f, 0.0f,
@@ -95,13 +91,13 @@ public class TitleScreen {
                 -1.0f,  1.0f, 0.0f
         };
 
-        // Set up the texture coordinates
         float[] texCoords = {
                 0.0f, 1.0f,
                 1.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 0.0f
         };
+
 
         // Set up the indices for the quad
         int[] indices = {
@@ -144,15 +140,14 @@ public class TitleScreen {
     }
 
     private void renderTitleScreen() {
-        GL46.glEnable(GL46.GL_BLEND);
-        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
-
         GL46.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);
 
+        GL46.glEnable(GL46.GL_BLEND);
+        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, titleScreenTextureID);
         GL46.glBindVertexArray(vaoID);
-
         GL46.glEnableVertexAttribArray(0);
         GL46.glEnableVertexAttribArray(1);
 
@@ -160,7 +155,6 @@ public class TitleScreen {
 
         GL46.glDisableVertexAttribArray(0);
         GL46.glDisableVertexAttribArray(1);
-
         GL46.glBindVertexArray(0);
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
 

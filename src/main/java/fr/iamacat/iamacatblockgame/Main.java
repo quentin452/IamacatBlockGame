@@ -13,7 +13,6 @@ import org.lwjgl.system.MemoryStack;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
