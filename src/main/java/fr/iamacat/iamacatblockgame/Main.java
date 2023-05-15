@@ -1,16 +1,21 @@
 package fr.iamacat.iamacatblockgame;
 
+import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 
 public class Main {
 
     private long window;
     private boolean showTitleScreen;
+    private TitleScreen titleScreen;
 
     public void run() {
         init();
         showTitleScreen = true;
+        titleScreen = new TitleScreen(window);
         loop();
         cleanup();
     }
@@ -33,11 +38,16 @@ public class Main {
                 }
             }
         });
+
+        // Set the clear color to green
+        GL.createCapabilities();
+        GL11.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     }
 
     private void loop() {
         while (!GLFW.glfwWindowShouldClose(window) && showTitleScreen) {
-            // Perform game logic and rendering for the title screen
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            titleScreen.update();
             GLFW.glfwPollEvents();
         }
 
