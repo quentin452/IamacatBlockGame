@@ -22,7 +22,6 @@ public class Main {
 
     public static void main(String[] args) {
         Log4jConfiguration.configure();
-        logger.info("Starting the game...");
         new Main().run();
     }
     private static final Logger logger = LogManager.getLogger(Main.class);
@@ -55,13 +54,14 @@ public class Main {
         GLFW.glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
-                if (showTitleScreen && action == GLFW.GLFW_PRESS) {
+                if (showTitleScreen && action == GLFW.GLFW_PRESS && button == GLFW.GLFW_MOUSE_BUTTON_1) {
                     // Launch the game here
                     System.out.println("Launching the game...");
                     showTitleScreen = false;
                 }
             }
         });
+
        GL.createCapabilities();
     }
     private void setWindowIcon() {

@@ -66,16 +66,22 @@ public class TitleScreen {
         buttons.add(quitButton);
     }
 
-   private int loadTextureFromResource(String path) {
+    private int loadTextureFromResource(String path) {
         try {
+            System.out.println("Loading texture from resource: " + path);
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
             if (inputStream == null) {
+                System.err.println("Failed to load texture: " + path);
                 throw new RuntimeException("Failed to load texture: " + path);
             }
             BufferedImage image = ImageIO.read(inputStream);
             TextureLoader textureLoader = new TextureLoader();
-            return textureLoader.loadTexture(image);
+            int textureID = textureLoader.loadTexture(image);
+            System.out.println("Texture loaded successfully. Texture ID: " + textureID);
+            return textureID;
         } catch (IOException e) {
+            System.err.println("Failed to load texture: " + path);
+            e.printStackTrace();
             throw new RuntimeException("Failed to load texture: " + path, e);
         }
     }
@@ -192,13 +198,12 @@ public class TitleScreen {
         mouseX = xpos[0];
         mouseY = ypos[0];
 
-        if (!gameStarted) {  // Vérifier si le jeu n'a pas déjà été démarré
+        if (!gameStarted) {
             for (Button button : buttons) {
                 if (button.isClicked(mouseX, mouseY)) {
                     if (button.getText().equals("Join")) {
-                        // Start the game
                         System.out.println("Starting the game...");
-                        gameStarted = true;  // Mettre à jour l'indicateur pour indiquer que le jeu a été démarré
+                        gameStarted = true;
                     } else if (button.getText().equals("Exit")) {
                         // Exit the game
                         GLFW.glfwSetWindowShouldClose(window, true);
