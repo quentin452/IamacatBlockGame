@@ -127,7 +127,6 @@ public class TitleScreen {
     }
 
     public void update() {
-        logger.info("Updating title screen...");
         // Perform game logic and rendering for the title screen
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         renderTitleScreen();
