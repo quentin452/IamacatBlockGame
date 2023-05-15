@@ -165,11 +165,11 @@ public class TitleScreen {
 
         for (Button button : buttons) {
             if (button.isClicked(mouseX, mouseY)) {
-                if (button.getText().equals("Jouer")) {
-                    // Lancer le jeu
-                    System.out.println("Lancement du jeu...");
-                } else if (button.getText().equals("Quitter")) {
-                    // Quitter le jeu
+                if (button.getText().equals("Join")) {
+                    // Start the game
+                    System.out.println("Starting the game...");
+                } else if (button.getText().equals("Exit")) {
+                    // Exit the game
                     GLFW.glfwSetWindowShouldClose(window, true);
                 }
             }
