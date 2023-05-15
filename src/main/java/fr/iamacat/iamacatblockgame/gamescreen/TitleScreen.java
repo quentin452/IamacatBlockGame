@@ -92,10 +92,10 @@ public class TitleScreen {
         };
 
         float[] texCoords = {
-                0.0f, 1.0f,
-                1.0f, 1.0f,
+                0.0f, 0.0f,
                 1.0f, 0.0f,
-                0.0f, 0.0f
+                1.0f, 1.0f,
+                0.0f, 1.0f
         };
 
 
@@ -112,7 +112,7 @@ public class TitleScreen {
         // Create the vertex VBO and bind it
         vertexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, vertices, GL46.GL_STATIC_DRAW);
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoords, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
 
         // Create the texture coordinate VBO and bind it
@@ -128,6 +128,7 @@ public class TitleScreen {
 
         // Unbind the VAO
         GL46.glBindVertexArray(0);
+
     }
 
     public void update() {
@@ -149,7 +150,7 @@ public class TitleScreen {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, titleScreenTextureID);
         GL46.glBindVertexArray(vaoID);
         GL46.glEnableVertexAttribArray(0);
-        GL46.glEnableVertexAttribArray(1);
+        GL46.glEnableVertexAttribArray(1); // Enable texture coordinates attribute
 
         GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
 
