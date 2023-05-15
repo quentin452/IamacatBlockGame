@@ -61,9 +61,9 @@ public class Main {
                 }
             }
         });
-
        GL.createCapabilities();
     }
+
     private void setWindowIcon() {
         // Load the icon image
         ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png");
@@ -75,7 +75,6 @@ public class Main {
         // Set the window icon
         GLFW.glfwSetWindowIcon(window, icons);
     }
-
 
     private ByteBuffer loadIconImage(String path) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -127,11 +126,13 @@ public class Main {
             }
         }
     }
+
     private void updateTitleScreen() {
         GL46.glClear(GL11.GL_COLOR_BUFFER_BIT);
         titleScreen.update();
         GLFW.glfwPollEvents();
     }
+
     private void cleanup() {
         // Clean up GLFW resources
         GLFW.glfwDestroyWindow(window);

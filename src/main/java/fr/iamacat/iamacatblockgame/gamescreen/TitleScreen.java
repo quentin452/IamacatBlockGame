@@ -55,7 +55,6 @@ public class TitleScreen {
             BufferedImage image = ImageIO.read(inputStream);
             titleScreenTextureID = loadTexture(image);
             System.out.println("Title screen texture ID: " + titleScreenTextureID);
-
         } catch (IOException e) {
             throw new RuntimeException("Failed to load texture: " + titleScreenTexturePath, e);
         }
@@ -79,7 +78,6 @@ public class TitleScreen {
             if (inputStream == null) {
                 throw new RuntimeException("Failed to load texture: " + path);
             }
-
             BufferedImage image = ImageIO.read(inputStream);
             return loadTexture(image);
         } catch (IOException e) {
@@ -88,45 +86,36 @@ public class TitleScreen {
             throw new RuntimeException("Failed to load texture: " + path, e);
         }
     }
+
     private int loadTexture(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int[] pixels = new int[width * height];
+        image.getRGB(0, 0, width, height, pixels, 0, width);
+        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4); // 4 for RGBA components
 
-        try {
-
-            int width = image.getWidth();
-            int height = image.getHeight();
-            int[] pixels = new int[width * height];
-            image.getRGB(0, 0, width, height, pixels, 0, width);
-            ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4); // 4 for RGBA components
-            int type = image.getType();
-            if (type == BufferedImage.TYPE_INT_ARGB || type == BufferedImage.TYPE_INT_RGB) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    int pixel = pixels[y * width + x];
-                    buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
-                    buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green component
-                    buffer.put((byte) (pixel & 0xFF));         // Blue component
-                    buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
-                }
-            }
-            }
-            buffer.flip();
-
-            int textureID = GL46.glGenTextures();
-            GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
-
-            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
-            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
-            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
-            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
-
-            GL46.glTexImage2D(GL46.GL_TEXTURE_2D, 0, GL46.GL_RGBA, width, height, 0, GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE, buffer);
-
-            GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
-
-            return textureID;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load texture", e);
+        for (int pixel : pixels) {
+            buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
+            buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green component
+            buffer.put((byte) (pixel & 0xFF));         // Blue component
+            buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
         }
+
+        buffer.flip();
+
+        int textureID = GL46.glGenTextures();
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
+
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
+
+        GL46.glTexImage2D(GL46.GL_TEXTURE_2D, 0, GL46.GL_RGBA, width, height, 0, GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE, buffer);
+
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
+
+        return textureID;
     }
 
     private void setupMesh() {
@@ -243,4 +232,5 @@ public class TitleScreen {
             }
         }
     }
-}}
+}
+}
