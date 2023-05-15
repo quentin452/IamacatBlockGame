@@ -49,7 +49,6 @@ public class TitleScreen {
         }
     }
 
-
     private void createButtons() {
         //Create buttons and add them to the button list
         String playButtonTexturePath = "textures/gamescreen/button/playbutton.png";

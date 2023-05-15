@@ -8,7 +8,6 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 import javax.imageio.ImageIO;
@@ -63,9 +62,7 @@ public class Main {
                 }
             }
         });
-        // Set the clear color to green
-        GL.createCapabilities();
-        GL11.glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+       GL.createCapabilities();
     }
     private void setWindowIcon() {
         // Load the icon image
@@ -96,8 +93,19 @@ public class Main {
             int imageHeight = image.getHeight();
             int imageChannels = image.getRaster().getNumBands();
             ByteBuffer imageBuffer = ByteBuffer.allocateDirect(imageWidth * imageHeight * imageChannels);
-            byte[] imagePixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-            imageBuffer.put(imagePixels).flip();
+            int[] imagePixels = image.getRGB(0, 0, imageWidth, imageHeight, null, 0, imageWidth);
+            // Réorganiser les pixels dans l'ordre RGBA attendu par OpenGL
+            for (int i = 0; i < imageWidth * imageHeight; i++) {
+                int pixel = imagePixels[i];
+                byte r = (byte) ((pixel >> 16) & 0xFF);
+                byte g = (byte) ((pixel >> 8) & 0xFF);
+                byte b = (byte) (pixel & 0xFF);
+                byte a = (byte) ((pixel >> 24) & 0xFF);
+                imageBuffer.put(r).put(g).put(b).put(a);
+            }
+            imageBuffer.flip();
+            imageBuffer.flip();
+
 
             width.put(0, imageWidth);
             height.put(0, imageHeight);
