@@ -1,6 +1,6 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
-import fr.iamacat.iamacatblockgame.textures.TextureLoader;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 
@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,14 @@ public class TitleScreen {
 
     private void loadTitleScreenTexture() {
         String titleScreenTexturePath = "textures/gamescreen/titlescreen.png";
+        int textureID = GL46.glGenTextures();
+        // Add these calls
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_LINEAR);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
+
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(titleScreenTexturePath)) {
             if (inputStream == null) {
@@ -44,8 +53,7 @@ public class TitleScreen {
             }
 
             BufferedImage image = ImageIO.read(inputStream);
-            TextureLoader textureLoader = new TextureLoader();
-            titleScreenTextureID = textureLoader.loadTexture(image);
+            titleScreenTextureID = loadTexture(image);
             System.out.println("Title screen texture ID: " + titleScreenTextureID);
 
         } catch (IOException e) {
@@ -73,12 +81,51 @@ public class TitleScreen {
             }
 
             BufferedImage image = ImageIO.read(inputStream);
-            TextureLoader textureLoader = new TextureLoader();
-            return textureLoader.loadTexture(image);
+            return loadTexture(image);
         } catch (IOException e) {
             System.err.println("Failed to load texture: " + path);
             e.printStackTrace();
             throw new RuntimeException("Failed to load texture: " + path, e);
+        }
+    }
+    private int loadTexture(BufferedImage image) {
+
+        try {
+
+            int width = image.getWidth();
+            int height = image.getHeight();
+            int[] pixels = new int[width * height];
+            image.getRGB(0, 0, width, height, pixels, 0, width);
+            ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4); // 4 for RGBA components
+            int type = image.getType();
+            if (type == BufferedImage.TYPE_INT_ARGB || type == BufferedImage.TYPE_INT_RGB) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int pixel = pixels[y * width + x];
+                    buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
+                    buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green component
+                    buffer.put((byte) (pixel & 0xFF));         // Blue component
+                    buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
+                }
+            }
+            }
+            buffer.flip();
+
+            int textureID = GL46.glGenTextures();
+            GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
+
+            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
+            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
+            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
+            GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
+
+            GL46.glTexImage2D(GL46.GL_TEXTURE_2D, 0, GL46.GL_RGBA, width, height, 0, GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE, buffer);
+
+            GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
+
+            return textureID;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load texture", e);
         }
     }
 
@@ -109,17 +156,17 @@ public class TitleScreen {
         vaoID = GL30.glGenVertexArrays();
         GL30.glBindVertexArray(vaoID);
 
-// Create the vertex VBO and bind it
+        // Create the vertex VBO and bind it
         vertexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
         GL46.glBufferData(GL46.GL_ARRAY_BUFFER, vertices, GL46.GL_STATIC_DRAW);
-        GL46.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 
         // Create the texture coordinate VBO and bind it
         texCoordVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
         GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoords, GL46.GL_STATIC_DRAW);
-        GL46.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 0, 0);
+        GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
 
         // Create the index VBO and bind it
         indexVBOID = GL46.glGenBuffers();
@@ -132,18 +179,19 @@ public class TitleScreen {
     }
 
     public void update() {
+        GL46.glEnable(GL46.GL_BLEND);  // Enable blending
+        renderTitleScreen();
+        renderButtons();
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);
         renderTitleScreen();
         renderButtons();
         handleButtonClicks();
         GLFW.glfwSwapBuffers(window);
         GLFW.glfwPollEvents();
+        GL46.glDisable(GL46.GL_BLEND);  // Disable blending
     }
 
     private void renderTitleScreen() {
-        GL46.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);
-
         GL46.glEnable(GL46.GL_BLEND);
         GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -179,7 +227,9 @@ public class TitleScreen {
         GLFW.glfwGetCursorPos(window, xpos, ypos);
         mouseX = xpos[0];
         mouseY = ypos[0];
-
+        // Check for mouse press
+        int mouseButton = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        if (mouseButton == GLFW.GLFW_PRESS) {
         if (!gameStarted) {
             for (Button button : buttons) {
                 if (button.isClicked(mouseX, mouseY)) {
@@ -193,4 +243,4 @@ public class TitleScreen {
             }
         }
     }
-}
+}}

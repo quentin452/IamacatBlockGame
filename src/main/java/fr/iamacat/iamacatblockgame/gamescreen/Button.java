@@ -1,5 +1,6 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 
 public class Button {
@@ -28,10 +29,9 @@ public class Button {
     }
 
     public void render() {
-        GL46.glEnable(GL46.GL_TEXTURE_2D); // Enable 2D texturing
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID); // Bind the texture
+        GL46.glEnable(GL46.GL_TEXTURE_2D);
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
 
-        // Draw the button quad with texture coordinates
         GL46.glBegin(GL46.GL_QUADS);
         GL46.glTexCoord2f(0, 0);
         GL46.glVertex2f(x, y);
@@ -43,12 +43,11 @@ public class Button {
         GL46.glVertex2f(x, y + height);
         GL46.glEnd();
 
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0); // Unbind the texture
-        GL46.glDisable(GL46.GL_TEXTURE_2D); // Disable 2D texturing
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
+        GL46.glDisable(GL46.GL_TEXTURE_2D);
     }
 
     public boolean isClicked(double mouseX, double mouseY) {
-        // Check if the mouse coordinates are inside the button
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 }
