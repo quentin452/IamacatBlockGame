@@ -11,20 +11,25 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 public class Main {
-    private static final Logger logger = LogManager.getLogger(Main.class);
-    private long window;
-    private boolean showTitleScreen;
-    private TitleScreen titleScreen;
 
     public static void main(String[] args) {
         Log4jConfiguration.configure();
         logger.info("Starting the game...");
         new Main().run();
     }
+    private static final Logger logger = LogManager.getLogger(Main.class);
+    private long window;
+    private boolean showTitleScreen;
+    private TitleScreen titleScreen;
 
     public void run() {
         logger.debug("Running the game...");
@@ -37,6 +42,8 @@ public class Main {
 
     private void init() {
         // Initialize GLFW and create the window
+
+
         GLFW.glfwInit();
         window = GLFW.glfwCreateWindow(1280, 720, "IamACat Block Game", 0, 0);
 
@@ -81,14 +88,28 @@ public class Main {
             IntBuffer channels = stack.mallocInt(1);
 
             // Load the icon image using STBImage
-            ByteBuffer imageBuffer = STBImage.stbi_load(path, width, height, channels, 0);
-            if (imageBuffer == null) {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
+            if (inputStream == null) {
                 throw new RuntimeException("Failed to load icon image: " + path);
             }
+            BufferedImage image = ImageIO.read(inputStream);
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+            int imageChannels = image.getRaster().getNumBands();
+            ByteBuffer imageBuffer = ByteBuffer.allocateDirect(imageWidth * imageHeight * imageChannels);
+            byte[] imagePixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+            imageBuffer.put(imagePixels).flip();
+
+            width.put(0, imageWidth);
+            height.put(0, imageHeight);
+            channels.put(0, imageChannels);
 
             return imageBuffer;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load icon image: " + path, e);
         }
     }
+
     private void loop() {
         while (!GLFW.glfwWindowShouldClose(window)) {
             if (showTitleScreen) {

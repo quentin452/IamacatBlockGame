@@ -11,6 +11,10 @@ import org.lwjgl.opengl.GL30;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -35,22 +39,36 @@ public class TitleScreen {
     }
 
     private void loadTitleScreenTexture() {
-        String titleScreenTexturePath = "textures/gamescreen/titlescreen.png"; // #todo
-        titleScreenTextureID = TextureLoader.loadTexture(titleScreenTexturePath);
+        String titleScreenTexturePath = "textures/gamescreen/titlescreen.png";
+        titleScreenTextureID = loadTextureFromResource(titleScreenTexturePath);
     }
 
     private void createButtons() {
         // Create buttons and add them to the button list
-        String playButtonTexturePath = "textures/gamescreen/button/playbutton.png"; // #todo
-        int playButtonTextureID = TextureLoader.loadTexture(playButtonTexturePath);
-        String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png"; // #todo
-        int quitButtonTextureID = TextureLoader.loadTexture(quitButtonTexturePath);
+        String playButtonTexturePath = "textures/gamescreen/button/playbutton.png";
+        int playButtonTextureID = loadTextureFromResource(playButtonTexturePath);
+        String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png";
+        int quitButtonTextureID = loadTextureFromResource(quitButtonTexturePath);
         int buttonWidth = 100; // Set the desired width for the buttons
         int buttonHeight = 50; // Set the desired height for the buttons
-        Button playButton = new Button("Jouer", 100, 100, buttonWidth, buttonHeight, playButtonTextureID);
-        Button quitButton = new Button("Quitter", 100, 200, buttonWidth, buttonHeight, quitButtonTextureID);
+        Button playButton = new Button("Join", 100, 100, buttonWidth, buttonHeight, playButtonTextureID);
+        Button quitButton = new Button("Exit", 100, 200, buttonWidth, buttonHeight, quitButtonTextureID);
         buttons.add(playButton);
         buttons.add(quitButton);
+    }
+
+    private int loadTextureFromResource(String path) {
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
+            if (inputStream == null) {
+                throw new RuntimeException("Failed to load texture: " + path);
+            }
+            BufferedImage image = ImageIO.read(inputStream);
+            TextureLoader textureLoader = new TextureLoader();
+            return textureLoader.loadTexture(image);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load texture: " + path, e);
+        }
     }
 
     private void setupMesh() {
