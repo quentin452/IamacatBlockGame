@@ -22,6 +22,8 @@ import java.util.List;
 
 public class TitleScreen {
     private static final Logger logger = LogManager.getLogger(TitleScreen.class);
+
+    private boolean gameStarted;  // Ajout d'un indicateur pour suivre si le jeu a déjà été démarré ou non
     private long window;
     private List<Button> buttons;
     private int titleScreenTextureID;
@@ -36,6 +38,7 @@ public class TitleScreen {
         createButtons();
         loadTitleScreenTexture();
         setupMesh();
+        gameStarted = false;  // Initialiser l'indicateur à false
     }
 
     private void loadTitleScreenTexture() {
@@ -150,8 +153,16 @@ public class TitleScreen {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, titleScreenTextureID);
         GL30.glBindVertexArray(vaoID);
 
+        // Enable vertex attribute arrays
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+
         // Draw the quad
         GL11.glDrawElements(GL11.GL_TRIANGLES, 6, GL11.GL_UNSIGNED_INT, 0);
+
+        // Disable vertex attribute arrays
+        GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
 
         // Unbind the texture and VAO
         GL30.glBindVertexArray(0);
@@ -171,8 +182,8 @@ public class TitleScreen {
 
     private void handleButtonClicks() {
         // Handle button clicks
-        double mouseX = 0.0;
-        double mouseY = 0.0;
+        double mouseX;
+        double mouseY;
 
         // Get the current mouse position
         double[] xpos = new double[1];
@@ -181,14 +192,17 @@ public class TitleScreen {
         mouseX = xpos[0];
         mouseY = ypos[0];
 
-        for (Button button : buttons) {
-            if (button.isClicked(mouseX, mouseY)) {
-                if (button.getText().equals("Join")) {
-                    // Start the game
-                    System.out.println("Starting the game...");
-                } else if (button.getText().equals("Exit")) {
-                    // Exit the game
-                    GLFW.glfwSetWindowShouldClose(window, true);
+        if (!gameStarted) {  // Vérifier si le jeu n'a pas déjà été démarré
+            for (Button button : buttons) {
+                if (button.isClicked(mouseX, mouseY)) {
+                    if (button.getText().equals("Join")) {
+                        // Start the game
+                        System.out.println("Starting the game...");
+                        gameStarted = true;  // Mettre à jour l'indicateur pour indiquer que le jeu a été démarré
+                    } else if (button.getText().equals("Exit")) {
+                        // Exit the game
+                        GLFW.glfwSetWindowShouldClose(window, true);
+                    }
                 }
             }
         }
