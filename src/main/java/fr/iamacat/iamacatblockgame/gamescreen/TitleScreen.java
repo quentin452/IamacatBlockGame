@@ -35,17 +35,46 @@ public class TitleScreen {
         setupMesh();
         gameStarted = false;
     }
+    public void update() {
+        updateTitleScreen();
+        updateButtons();
+        updateInput();
+        GLFW.glfwSwapBuffers(window);
+        GLFW.glfwPollEvents();
+    }
+    private void bindTextureId(int textureId) {
+        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureId);
+    }
+    private void enableBlending() {
+        GL46.glEnable(GL46.GL_BLEND);
+        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+    }
 
+    private void disableBlending() {
+        GL46.glDisable(GL46.GL_BLEND);
+    }
+    private void updateTitleScreen() {
+        renderTitleScreen();
+    }
+
+    private void updateButtons() {
+        renderButtons();
+    }
+
+    private void updateInput() {
+        handleButtonClicks();
+    }
     private void loadTitleScreenTexture() {
         String titleScreenTexturePath = "textures/gamescreen/titlescreen.png";
-        int textureID = GL46.glGenTextures();
-        // Add these calls
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_LINEAR);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
 
+        int textureID = GL46.glGenTextures();
+
+        GL46.glActiveTexture(GL46.GL_TEXTURE0);
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
+
+        // Mipmapping
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
+        GL46.glGenerateMipmap(GL46.GL_TEXTURE_2D);
 
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(titleScreenTexturePath)) {
             if (inputStream == null) {
@@ -108,8 +137,8 @@ public class TitleScreen {
 
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
+        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_LINEAR);
 
         GL46.glTexImage2D(GL46.GL_TEXTURE_2D, 0, GL46.GL_RGBA, width, height, 0, GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE, buffer);
 
@@ -117,6 +146,7 @@ public class TitleScreen {
 
         return textureID;
     }
+
 
     private void setupMesh() {
 
@@ -167,24 +197,14 @@ public class TitleScreen {
 
     }
 
-    public void update() {
-        GL46.glEnable(GL46.GL_BLEND);  // Enable blending
-        renderTitleScreen();
-        renderButtons();
-        GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);
-        renderTitleScreen();
-        renderButtons();
-        handleButtonClicks();
-        GLFW.glfwSwapBuffers(window);
-        GLFW.glfwPollEvents();
-        GL46.glDisable(GL46.GL_BLEND);  // Disable blending
-    }
-
     private void renderTitleScreen() {
+        GL46.glActiveTexture(GL46.GL_TEXTURE0);
+
+        bindTextureId(titleScreenTextureID);
+
         GL46.glEnable(GL46.GL_BLEND);
         GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
 
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, titleScreenTextureID);
         GL46.glBindVertexArray(vaoID);
         GL46.glEnableVertexAttribArray(0);
         GL46.glEnableVertexAttribArray(1); // Enable texture coordinates attribute
@@ -200,11 +220,26 @@ public class TitleScreen {
     }
 
     private void renderButtons() {
+        enableBlending();
+
         for (Button button : buttons) {
-            GL46.glBindTexture(GL46.GL_TEXTURE_2D, button.getTextureID());
-            button.render();
+            bindTextureId(button.getTextureID());
+
+            GL46.glBindVertexArray(vaoID);
+            GL46.glEnableVertexAttribArray(0);
+            GL46.glEnableVertexAttribArray(1); // Enable texture coordinates attribute
+
+            GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
+
+            GL46.glDisableVertexAttribArray(0);
+            GL46.glDisableVertexAttribArray(1);
+            GL46.glBindVertexArray(0);
+            GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
         }
+
+        disableBlending();
     }
+
 
     private void handleButtonClicks() {
         double mouseX;

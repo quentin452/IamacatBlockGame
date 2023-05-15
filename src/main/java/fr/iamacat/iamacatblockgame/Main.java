@@ -3,6 +3,7 @@ package fr.iamacat.iamacatblockgame;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
@@ -66,54 +67,48 @@ public class Main {
 
     private void setWindowIcon() {
         // Load the icon image
-        ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png");
+        BufferedImage iconImage;
+        try {
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("textures/gamescreen/icon.png");
+            if (inputStream == null) {
+                throw new RuntimeException("Failed to load icon image: textures/gamescreen/icon.png");
+            }
+            iconImage = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load icon image: textures/gamescreen/icon.png", e);
+        }
 
-        // Create GLFWImage object for the icon
-        GLFWImage.Buffer icons = GLFWImage.create(1);
-        icons.position(0).width(16).height(16).pixels(iconImageBuffer);
+        // Get the image dimensions
+        int iconWidth = iconImage.getWidth();
+        int iconHeight = iconImage.getHeight();
+
+        // Get the pixel data from the image
+        int[] pixels = new int[iconWidth * iconHeight];
+        iconImage.getRGB(0, 0, iconWidth, iconHeight, pixels, 0, iconWidth);
+
+        // Create the GLFWImage object for the icon
+        GLFWImage.Buffer icons = GLFWImage.malloc(1);
+        icons.position(0).width(iconWidth).height(iconHeight);
+
+        // Set the pixel data for the icon
+        ByteBuffer buffer = BufferUtils.createByteBuffer(iconWidth * iconHeight * 4);
+        for (int y = 0; y < iconHeight; y++) {
+            for (int x = 0; x < iconWidth; x++) {
+                int pixel = pixels[y * iconWidth + x];
+                buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
+                buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green component
+                buffer.put((byte) (pixel & 0xFF));         // Blue component
+                buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
+            }
+        }
+        buffer.flip();
+        icons.pixels(buffer);
 
         // Set the window icon
         GLFW.glfwSetWindowIcon(window, icons);
-    }
 
-    private ByteBuffer loadIconImage(String path) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer width = stack.mallocInt(1);
-            IntBuffer height = stack.mallocInt(1);
-            IntBuffer channels = stack.mallocInt(1);
-
-            // Load the icon image using STBImage
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
-            if (inputStream == null) {
-                throw new RuntimeException("Failed to load icon image: " + path);
-            }
-            BufferedImage image = ImageIO.read(inputStream);
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-            int imageChannels = image.getRaster().getNumBands();
-            ByteBuffer imageBuffer = ByteBuffer.allocateDirect(imageWidth * imageHeight * imageChannels);
-            int[] imagePixels = image.getRGB(0, 0, imageWidth, imageHeight, null, 0, imageWidth);
-            // Réorganiser les pixels dans l'ordre RGBA attendu par OpenGL
-            for (int i = 0; i < imageWidth * imageHeight; i++) {
-                int pixel = imagePixels[i];
-                byte r = (byte) ((pixel >> 16) & 0xFF);
-                byte g = (byte) ((pixel >> 8) & 0xFF);
-                byte b = (byte) (pixel & 0xFF);
-                byte a = (byte) ((pixel >> 24) & 0xFF);
-                imageBuffer.put(r).put(g).put(b).put(a);
-            }
-            imageBuffer.flip();
-            imageBuffer.flip();
-
-
-            width.put(0, imageWidth);
-            height.put(0, imageHeight);
-            channels.put(0, imageChannels);
-
-            return imageBuffer;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load icon image: " + path, e);
-        }
+        // Free the GLFWImage buffer
+        icons.free();
     }
 
     private void loop() {
