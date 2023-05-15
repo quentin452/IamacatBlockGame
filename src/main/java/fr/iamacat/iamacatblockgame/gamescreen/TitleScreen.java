@@ -44,7 +44,7 @@ public class TitleScreen {
     }
 
     private void createButtons() {
-        // Create buttons and add them to the button list
+        //Create buttons and add them to the button list
         String playButtonTexturePath = "textures/gamescreen/button/playbutton.png";
         int playButtonTextureID = loadTextureFromResource(playButtonTexturePath);
         String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png";
@@ -57,7 +57,7 @@ public class TitleScreen {
         buttons.add(quitButton);
     }
 
-    private int loadTextureFromResource(String path) {
+   private int loadTextureFromResource(String path) {
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
             if (inputStream == null) {
@@ -82,10 +82,10 @@ public class TitleScreen {
 
         // Set up the texture coordinates
         float[] texCoords = {
-                0.0f, 0.0f,  // Bottom-left texcoord
-                1.0f, 0.0f,  // Bottom-right texcoord
-                1.0f, 1.0f,  // Top-right texcoord
-                0.0f, 1.0f   // Top-left texcoord
+                0.0f, 1.0f,  // Bottom-left texcoord
+                1.0f, 1.0f,  // Bottom-right texcoord
+                1.0f, 0.0f,  // Top-right texcoord
+                0.0f, 0.0f   // Top-left texcoord
         };
 
         // Set up the indices for the quad
@@ -131,6 +131,16 @@ public class TitleScreen {
     }
 
     private void renderTitleScreen() {
+        // Enable alpha blending
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        // Set the clear color to transparent (black with alpha = 0)
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        // Clear the color buffer
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
         // Bind the texture and VAO
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, titleScreenTextureID);
         GL30.glBindVertexArray(vaoID);
@@ -141,7 +151,11 @@ public class TitleScreen {
         // Unbind the texture and VAO
         GL30.glBindVertexArray(0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+
+        // Disable alpha blending
+        GL11.glDisable(GL11.GL_BLEND);
     }
+
 
     private void renderButtons() {
         // Render the buttons on the title screen
@@ -150,6 +164,8 @@ public class TitleScreen {
             button.render();
         }
     }
+
+
 
     private void handleButtonClicks() {
         // Handle button clicks
@@ -175,4 +191,6 @@ public class TitleScreen {
             }
         }
     }
+
+
 }

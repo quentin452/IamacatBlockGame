@@ -53,5 +53,4 @@ public class TextureLoader {
             throw new RuntimeException("Failed to load texture", e);
         }
     }
-
 }

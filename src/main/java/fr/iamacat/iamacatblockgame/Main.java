@@ -48,7 +48,7 @@ public class Main {
         window = GLFW.glfwCreateWindow(1280, 720, "IamACat Block Game", 0, 0);
 
         // Set window icon
-        setWindowIcon();
+         setWindowIcon();
 
         GLFW.glfwMakeContextCurrent(window);
         GLFW.glfwSwapInterval(1);
@@ -70,7 +70,7 @@ public class Main {
     }
     private void setWindowIcon() {
         // Load icon image using STBImage or any other image loading library
-        ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png"); // #todo
+        ByteBuffer iconImageBuffer = loadIconImage("textures/gamescreen/icon.png");
 
         // Create GLFWImage object for the icon
         GLFWImage.Buffer icons = GLFWImage.create(1);
