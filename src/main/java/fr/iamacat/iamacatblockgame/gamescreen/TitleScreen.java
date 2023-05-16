@@ -87,7 +87,7 @@ public class TitleScreen {
         handleButtonClicks();
     }
     private void loadTitleScreenTexture() {
-        String titleScreenTexturePath = "textures/gamescreen/titlescreen.png";
+        String titleScreenTexturePath = "/textures/gamescreen/titlescreen.png";
 
         int textureID = GL46.glGenTextures();
 
@@ -98,7 +98,7 @@ public class TitleScreen {
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
         GL46.glGenerateMipmap(GL46.GL_TEXTURE_2D);
 
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(titleScreenTexturePath)) {
+        try (InputStream inputStream = getClass().getResourceAsStream(titleScreenTexturePath)) {
             if (inputStream == null) {
                 throw new RuntimeException("Failed to load texture: " + titleScreenTexturePath);
             }
@@ -112,10 +112,8 @@ public class TitleScreen {
     }
 
     private void createButtons() {
-        String playButtonTexturePath = "textures/gamescreen/button/playbutton.png";
-        int playButtonTextureID = loadTextureFromResource(playButtonTexturePath);
-        String quitButtonTexturePath = "textures/gamescreen/button/quitbutton.png";
-        int quitButtonTextureID = loadTextureFromResource(quitButtonTexturePath);
+        int playButtonTextureID = loadTextureFromInputStream(getClass().getResourceAsStream("/textures/gamescreen/button/playbutton.png"));
+        int quitButtonTextureID = loadTextureFromInputStream(getClass().getResourceAsStream("/textures/gamescreen/button/quitbutton.png"));
         int buttonWidth = 100;
         int buttonHeight = 50;
         Button playButton = new Button("Join", 100, 100, buttonWidth, buttonHeight, playButtonTextureID);
@@ -124,17 +122,12 @@ public class TitleScreen {
         buttons.add(quitButton);
     }
 
-    private int loadTextureFromResource(String path) {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path)) {
-            if (inputStream == null) {
-                throw new RuntimeException("Failed to load texture: " + path);
-            }
+    private int loadTextureFromInputStream(InputStream inputStream) {
+        try {
             BufferedImage image = ImageIO.read(inputStream);
             return loadTexture(image);
         } catch (IOException e) {
-            System.err.println("Failed to load texture: " + path);
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load texture: " + path, e);
+            throw new RuntimeException("Failed to load texture from input stream", e);
         }
     }
 
@@ -170,7 +163,6 @@ public class TitleScreen {
     }
 
     private void setupMesh() {
-
         float[] vertices = {
                 -1.0f, -1.0f, 0.0f,
                 1.0f, -1.0f, 0.0f,
@@ -185,38 +177,32 @@ public class TitleScreen {
                 0.0f, 1.0f
         };
 
-
-        // Set up the indices for the quad
         int[] indices = {
                 0, 1, 2,
                 2, 3, 0
         };
 
-        // Create and bind the VAO
-        vaoID = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vaoID);
+        vaoID = GL46.glGenVertexArrays();
+        GL46.glBindVertexArray(vaoID);
 
-        // Create the vertex VBO and bind it
         vertexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
         GL46.glBufferData(GL46.GL_ARRAY_BUFFER, vertices, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 
-        // Create the texture coordinate VBO and bind it
         texCoordVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
         GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoords, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
 
-        // Create the index VBO and bind it
         indexVBOID = GL46.glGenBuffers();
-        GL46.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-        GL46.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices, GL46.GL_STATIC_DRAW);
+        GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+        GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indices, GL46.GL_STATIC_DRAW);
 
-        // Unbind the VAO
         GL46.glBindVertexArray(0);
-
     }
+
+
 
     private void handleButtonClicks() {
         double mouseX;
