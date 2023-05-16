@@ -10,16 +10,6 @@ public class Button {
     private Texture texture;
     private Rectangle bounds;
     private String text;
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-    public Texture getTexture() {
-        return texture;
-    }
 
     public Button(String text, int x, int y, int width, int height, Texture texture) {
         this.texture = texture;
