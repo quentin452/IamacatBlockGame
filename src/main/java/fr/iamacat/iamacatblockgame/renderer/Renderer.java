@@ -47,9 +47,9 @@ private static void bindTextureId(int textureId) {
         enableBlending();
 
         if (vaoID == 0) {
-        createVAO();
+            createVAO();
         } else {
-        GL46.glBindVertexArray(vaoID);
+            GL46.glBindVertexArray(vaoID);
         }
 
         for (Button button : buttons) {
@@ -87,14 +87,8 @@ private static void bindTextureId(int textureId) {
             IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
             indicesBuffer.put(indices).flip();
 
-            GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
-            GL46.glBufferData(GL46.GL_ARRAY_BUFFER, verticesBuffer, GL46.GL_STATIC_DRAW);
-
             GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
             GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoordsBuffer, GL46.GL_STATIC_DRAW);
-
-            GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-            GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
 
             bindTextureId(button.getTextureID());
 
