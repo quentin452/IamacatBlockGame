@@ -33,7 +33,7 @@ public class Renderer {
 
         isTitleScreenDisplayed = true;
 
-        cleanup();
+        Renderer.deleteResources();
     }
     private static void bindTextureId(int textureId) {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureId);
@@ -96,7 +96,7 @@ public class Renderer {
         disableBlending();
         isTitleScreenDisplayed = false;
 
-        cleanup();
+        Renderer.deleteResources();
     }
     private static void createVAO() {
         vaoID = GL46.glGenVertexArrays();
@@ -124,7 +124,7 @@ public class Renderer {
 
     //cleanup VAO and VBOS to saves resources when not viewed , like if i am not in the title screen
 
-    public static void cleanup() {
+    public static void deleteResources() {
         if (!isTitleScreenDisplayed) {
             deleteVAOAndVBOs();
         }
@@ -133,21 +133,33 @@ public class Renderer {
     private static void deleteVAOAndVBOs() {
         if (vaoID != 0) {
             GL46.glDeleteVertexArrays(vaoID);
+            if (GL46.glGetError() != GL46.GL_NO_ERROR) {
+                // Handle error
+            }
             vaoID = 0;
         }
 
         if (vertexVBOID != 0) {
             GL46.glDeleteBuffers(vertexVBOID);
+            if (GL46.glGetError() != GL46.GL_NO_ERROR) {
+                // Handle error
+            }
             vertexVBOID = 0;
         }
 
         if (texCoordVBOID != 0) {
             GL46.glDeleteBuffers(texCoordVBOID);
+            if (GL46.glGetError() != GL46.GL_NO_ERROR) {
+                // Handle error
+            }
             texCoordVBOID = 0;
         }
 
         if (indexVBOID != 0) {
             GL46.glDeleteBuffers(indexVBOID);
+            if (GL46.glGetError() != GL46.GL_NO_ERROR) {
+                // Handle error
+            }
             indexVBOID = 0;
         }
     }
