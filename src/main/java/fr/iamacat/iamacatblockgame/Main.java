@@ -24,6 +24,7 @@ public class Main {
         Log4jConfiguration.configure();
         new Main().run();
     }
+
     private static final Logger logger = LogManager.getLogger(Main.class);
     private long window;
     private boolean showTitleScreen;
@@ -63,6 +64,8 @@ public class Main {
 
         GL.createCapabilities(); // Create the OpenGL context after making it current
     }
+
+
 
 
     private void setWindowIcon() {
@@ -111,7 +114,7 @@ public class Main {
         icons.free();
     }
 
-    private void loop() {
+   private void loop() {
         while (!GLFW.glfwWindowShouldClose(window)) {
             if (showTitleScreen) {
                 updateTitleScreen();
@@ -121,6 +124,8 @@ public class Main {
             }
         }
     }
+
+
 
     private void updateTitleScreen() {
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);

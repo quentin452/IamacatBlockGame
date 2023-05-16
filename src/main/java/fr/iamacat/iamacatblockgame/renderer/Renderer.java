@@ -42,65 +42,48 @@ public static void renderTitleScreen(int textureID, int vaoIDParam) {
 private static void bindTextureId(int textureId) {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureId);
         }
-
     public static void renderButtons(List<Button> buttons) {
         enableBlending();
 
         if (vaoID == 0) {
             createVAO();
+            GL46.glBindVertexArray(vaoID);
         } else {
             GL46.glBindVertexArray(vaoID);
         }
 
+        // Create and bind the vertex and texture coordinate buffers outside the loop
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
+        GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
+
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
+        GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
+
+        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(6); // Create an IntBuffer for indices
+
         for (Button button : buttons) {
-            float[] vertices = {
-                    -0.5f, 0.5f, 0.0f,    // Top-left vertex
-                    0.5f, 0.5f, 0.0f,     // Top-right vertex
-                    0.5f, -0.5f, 0.0f,    // Bottom-right vertex
-                    -0.5f, -0.5f, 0.0f    // Bottom-left vertex
-            };
-
-            float[] texCoords = {
-                    0.0f, 1.0f,    // Top-left vertex
-                    1.0f, 1.0f,    // Top-right vertex
-                    1.0f, 0.0f,    // Bottom-right vertex
-                    0.0f, 0.0f     // Bottom-left vertex
-            };
-
             int[] indices = {
                     0, 1, 2,    // First triangle (top-right, top-left, bottom-right)
                     2, 3, 0     // Second triangle (bottom-right, bottom-left, top-left)
             };
 
-            FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
-            verticesBuffer.put(vertices).flip();
-
-            FloatBuffer texCoordsBuffer = BufferUtils.createFloatBuffer(texCoords.length);
-            texCoordsBuffer.put(texCoords).flip();
-
-            IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-            indicesBuffer.put(indices).flip();
-
-            GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
-            GL46.glBufferData(GL46.GL_ARRAY_BUFFER, verticesBuffer, GL46.GL_STATIC_DRAW);
-
-            GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
-            GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoordsBuffer, GL46.GL_STATIC_DRAW);
+            indicesBuffer.clear(); // Clear the buffer before adding new data
+            indicesBuffer.put(indices).flip(); // Put the indices data into the buffer and flip it
 
             bindTextureId(button.getTextureID());
 
             GL46.glEnableVertexAttribArray(0);
             GL46.glEnableVertexAttribArray(1);
 
-            GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
-            GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
-
-            GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
+            GL46.glDrawElements(GL46.GL_TRIANGLES, indicesBuffer);
 
             GL46.glDisableVertexAttribArray(0);
             GL46.glDisableVertexAttribArray(1);
         }
 
+        // Unbind the buffers after the loop
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+        GL46.glBindVertexArray(0);
         disableBlending();
         isTitleScreenDisplayed = false;
 
@@ -113,14 +96,38 @@ private static void bindTextureId(int textureId) {
 
         vertexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
+
+        float[] vertices = {
+                -0.5f, 0.5f, 0.0f,    // Top-left vertex
+                0.5f, 0.5f, 0.0f,     // Top-right vertex
+                0.5f, -0.5f, 0.0f,    // Bottom-right vertex
+                -0.5f, -0.5f, 0.0f    // Bottom-left vertex
+        };
+
+        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        verticesBuffer.put(vertices).flip();
+
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, verticesBuffer, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 
         texCoordVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
+
+        float[] texCoords = {
+                0.0f, 1.0f,    // Top-left vertex
+                1.0f, 1.0f,    // Top-right vertex
+                1.0f, 0.0f,    // Bottom-right vertex
+                0.0f, 0.0f     // Bottom-left vertex
+        };
+
+        FloatBuffer texCoordsBuffer = BufferUtils.createFloatBuffer(texCoords.length);
+        texCoordsBuffer.put(texCoords).flip();
+
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoordsBuffer, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
 
-        indexVBOID = GL46.glGenBuffers();
-        GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+        GL46.glBindVertexArray(0);
     }
 
     private static void enableBlending() {

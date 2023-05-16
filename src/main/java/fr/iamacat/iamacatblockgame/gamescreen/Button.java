@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL46;
 
 public class Button {
+
     private String text;
     private int x;
     private int y;
