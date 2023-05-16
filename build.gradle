@@ -15,24 +15,19 @@ compileJava {
     sourceCompatibility = '17'
     targetCompatibility = '17'
 }
-ext {
-    jmonkeyengine_version = '3.6.0-stable'
-    license = file("$rootDir/license.txt")
-}
 dependencies {
     implementation files("src/main/resources/native/${getNativeFolder()}")
     implementation("de.articdive:jnoise-pipeline:4.0.0")
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
-  //  implementation fileTree(dir: 'lib', include: ['*.jar'])
-    implementation "org.jmonkeyengine:jme3-core:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-awt-dialogs:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-plugins:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-effects:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-networking:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-lwjgl3:$jmonkeyengine_version"
-    implementation "org.jmonkeyengine:jme3-niftygui:$jmonkeyengine_version"
+    implementation "com.badlogicgames.gdx:gdx:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-box2d:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-controllers:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-controllers-desktop:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-controllers-android:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-controllers-gwt:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-controllers-ios:1.11.0"
+    implementation "com.badlogicgames.gdx:gdx-controllers-legacy:1.11.0"
     implementation "com.badlogicgames.gdx:gdx-ai:1.8.2"
     implementation "javax.vecmath:vecmath:1.5.2"
     implementation "com.simsilica:zay-es:1.4.0"

@@ -71,6 +71,12 @@ public class TitleScreen {
                 case GL46.GL_OUT_OF_MEMORY:
                     errorString = "GL_OUT_OF_MEMORY";
                     break;
+                case GL46.GL_STACK_UNDERFLOW:
+                    errorString = "GL_STACK_UNDERFLOW";
+                    break;
+                case GL46.GL_STACK_OVERFLOW:
+                    errorString = "GL_STACK_OVERFLOW";
+                    break;
                 default:
                     errorString = "Unknown error";
                     break;
@@ -79,6 +85,7 @@ public class TitleScreen {
             error = GL46.glGetError();
         }
     }
+
     private void updateTitleScreen() {
         Renderer.renderTitleScreen(titleScreenTextureID, vaoID);
     }

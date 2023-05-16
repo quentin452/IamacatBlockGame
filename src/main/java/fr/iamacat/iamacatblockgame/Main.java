@@ -1,5 +1,6 @@
 package fr.iamacat.iamacatblockgame;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL46;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import javax.imageio.ImageIO;
@@ -18,7 +19,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-public class Main {
+public class Main extends ApplicationAdapter {
 
     public static void main(String[] args) throws IOException {
         Log4jConfiguration.configure();

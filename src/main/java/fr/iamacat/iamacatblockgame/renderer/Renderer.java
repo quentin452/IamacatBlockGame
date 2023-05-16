@@ -78,7 +78,7 @@ public class Renderer {
             GL46.glEnableVertexAttribArray(0);
             GL46.glEnableVertexAttribArray(1);
 
-            GL46.glDrawElements(GL46.GL_TRIANGLES, indicesBuffer);
+            GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
 
             GL46.glDisableVertexAttribArray(0);
             GL46.glDisableVertexAttribArray(1);
@@ -153,7 +153,7 @@ public class Renderer {
     }
 
     private static void disableBlending() {
-        GL46.glDisable(GL46.GL_BLEND);
+       GL46.glDisable(GL46.GL_BLEND);
     }
 
     public static void deleteResources() {
@@ -162,7 +162,8 @@ public class Renderer {
         }
     }
 
-    private static void deleteVAOAndVBOs() {
+   private static void deleteVAOAndVBOs() {
+
         if (vaoID != 0) {
             GL46.glDeleteVertexArrays(vaoID);
             vaoID = 0;
@@ -178,6 +179,7 @@ public class Renderer {
         }
 
         if (indexVBOID != 0) {
+            GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, 0); // Unbind the element buffer object
             GL46.glDeleteBuffers(indexVBOID);
             indexVBOID = 0;
         }
