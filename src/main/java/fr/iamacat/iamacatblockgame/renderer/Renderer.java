@@ -53,27 +53,21 @@ private static void bindTextureId(int textureId) {
         }
 
         for (Button button : buttons) {
-        float[] vertices = {
-        // Define the button's vertices here
-        // Example: x, y, z coordinates of each vertex
-        -0.5f, 0.5f, 0.0f,    // Top-left vertex
-        0.5f, 0.5f, 0.0f,     // Top-right vertex
-        0.5f, -0.5f, 0.0f,    // Bottom-right vertex
-        -0.5f, -0.5f, 0.0f    // Bottom-left vertex
-        };
+            float[] vertices = {
+                    -0.5f, 0.5f, 0.0f,    // Top-left vertex
+                    0.5f, 0.5f, 0.0f,     // Top-right vertex
+                    0.5f, -0.5f, 0.0f,    // Bottom-right vertex
+                    -0.5f, -0.5f, 0.0f    // Bottom-left vertex
+            };
 
-        float[] texCoords = {
-        // Define the button's texture coordinates here
-        // Example: u, v coordinates of each vertex
-        0.0f, 1.0f,    // Top-left vertex
-        1.0f, 1.0f,    // Top-right vertex
-                1.0f, 0.0f,    // Bottom-right vertex
-                0.0f, 0.0f     // Bottom-left vertex
-        };
+            float[] texCoords = {
+                    0.0f, 1.0f,    // Top-left vertex
+                    1.0f, 1.0f,    // Top-right vertex
+                    1.0f, 0.0f,    // Bottom-right vertex
+                    0.0f, 0.0f     // Bottom-left vertex
+            };
 
             int[] indices = {
-                    // Define the indices for the triangles here
-                    // Example: indices that specify the order of vertices to form triangles
                     0, 1, 2,    // First triangle (top-right, top-left, bottom-right)
                     2, 3, 0     // Second triangle (bottom-right, bottom-left, top-left)
             };
@@ -86,6 +80,9 @@ private static void bindTextureId(int textureId) {
 
             IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
             indicesBuffer.put(indices).flip();
+
+            GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
+            GL46.glBufferData(GL46.GL_ARRAY_BUFFER, verticesBuffer, GL46.GL_STATIC_DRAW);
 
             GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
             GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoordsBuffer, GL46.GL_STATIC_DRAW);
