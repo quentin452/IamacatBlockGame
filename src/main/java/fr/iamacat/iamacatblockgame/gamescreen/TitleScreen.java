@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,12 +99,13 @@ public class TitleScreen {
         GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
         GL46.glGenerateMipmap(GL46.GL_TEXTURE_2D);
 
-        try (InputStream inputStream = getClass().getResourceAsStream(titleScreenTexturePath)) {
-            if (inputStream == null) {
+        try {
+            URL url = getClass().getResource(titleScreenTexturePath);
+            if (url == null) {
                 throw new RuntimeException("Failed to load texture: " + titleScreenTexturePath);
             }
 
-            BufferedImage image = ImageIO.read(inputStream);
+            BufferedImage image = ImageIO.read(url);
             titleScreenTextureID = loadTexture(image);
             System.out.println("Title screen texture ID: " + titleScreenTextureID);
         } catch (IOException e) {
