@@ -34,7 +34,7 @@ public class Main {
         logger.debug("Running the game...");
         init();
         showTitleScreen = true;
-        titleScreen = new TitleScreen(window);
+       titleScreen = new TitleScreen(window);
         loop();
         cleanup();
     }
@@ -50,6 +50,8 @@ public class Main {
         GLFW.glfwMakeContextCurrent(window);
         GLFW.glfwSwapInterval(1);
 
+        GL.createCapabilities(); // Create the OpenGL context after making it current
+
         // Set up mouse button callback for handling clicks
         GLFW.glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {
             @Override
@@ -61,12 +63,7 @@ public class Main {
                 }
             }
         });
-
-        GL.createCapabilities(); // Create the OpenGL context after making it current
     }
-
-
-
 
     private void setWindowIcon() {
         // Load the icon image
@@ -124,8 +121,6 @@ public class Main {
             }
         }
     }
-
-
 
     private void updateTitleScreen() {
         GL46.glClear(GL46.GL_COLOR_BUFFER_BIT);

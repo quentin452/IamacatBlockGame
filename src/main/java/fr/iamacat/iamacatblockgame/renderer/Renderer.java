@@ -9,12 +9,13 @@ import java.nio.IntBuffer;
 import java.util.List;
 
 public class Renderer {
+
     private static int vaoID;
     private static int vertexVBOID;
     private static int texCoordVBOID;
     private static int indexVBOID;
     private static boolean isTitleScreenDisplayed = false;
-public static void renderTitleScreen(int textureID, int vaoIDParam) {
+    public static void renderTitleScreen(int textureID, int vaoIDParam) {
         GL46.glActiveTexture(GL46.GL_TEXTURE0);
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
 
@@ -25,7 +26,7 @@ public static void renderTitleScreen(int textureID, int vaoIDParam) {
         GL46.glEnableVertexAttribArray(0);
         GL46.glEnableVertexAttribArray(1);
 
-        GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
+   //     GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
 
         GL46.glDisableVertexAttribArray(0);
         GL46.glDisableVertexAttribArray(1);
@@ -36,10 +37,10 @@ public static void renderTitleScreen(int textureID, int vaoIDParam) {
 
         isTitleScreenDisplayed = true;
 
-        Renderer.deleteResources();
+       Renderer.deleteResources();
         }
 
-private static void bindTextureId(int textureId) {
+    private static void bindTextureId(int textureId) {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureId);
         }
     public static void renderButtons(List<Button> buttons) {
@@ -52,7 +53,7 @@ private static void bindTextureId(int textureId) {
             GL46.glBindVertexArray(vaoID);
         }
 
-        // Create and bind the vertex and texture coordinate buffers outside the loop
+       // Create and bind the vertex and texture coordinate buffers outside the loop
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
         GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 
@@ -75,7 +76,7 @@ private static void bindTextureId(int textureId) {
             GL46.glEnableVertexAttribArray(0);
             GL46.glEnableVertexAttribArray(1);
 
-            GL46.glDrawElements(GL46.GL_TRIANGLES, indicesBuffer);
+            //GL46.glDrawElements(GL46.GL_TRIANGLES, indicesBuffer);
 
             GL46.glDisableVertexAttribArray(0);
             GL46.glDisableVertexAttribArray(1);
@@ -88,6 +89,8 @@ private static void bindTextureId(int textureId) {
         isTitleScreenDisplayed = false;
 
         Renderer.deleteResources();
+
+
     }
 
     private static void createVAO() {
@@ -145,7 +148,7 @@ private static void bindTextureId(int textureId) {
         }
     }
 
-    private static void deleteVAOAndVBOs() {
+   private static void deleteVAOAndVBOs() {
         if (vaoID != 0) {
             GL46.glDeleteVertexArrays(vaoID);
             vaoID = 0;
@@ -163,6 +166,6 @@ private static void bindTextureId(int textureId) {
     if (indexVBOID != 0) {
         GL46.glDeleteBuffers(indexVBOID);
         indexVBOID = 0;
+        }
     }
-}
 }

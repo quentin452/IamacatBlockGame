@@ -14,10 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TitleScreen {
+
     private static final Logger logger = LogManager.getLogger(TitleScreen.class);
 
     private boolean gameStarted;
@@ -81,7 +84,7 @@ public class TitleScreen {
     }
 
     private void updateButtons() {
-        Renderer.renderButtons(buttons);
+       Renderer.renderButtons(buttons);
     }
 
     private void updateInput() {
@@ -136,6 +139,7 @@ public class TitleScreen {
     private int loadTexture(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
+
         int[] pixels = new int[width * height];
         image.getRGB(0, 0, width, height, pixels, 0, width);
         ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4); // 4 for RGBA components
@@ -184,26 +188,45 @@ public class TitleScreen {
                 2, 3, 0
         };
 
+        // After setting up the vertices, texture coordinates, and shader program
+
+        System.out.println("Vertices:");
+        for (float vertex : vertices) {
+            System.out.print(vertex + " ");
+        }
+        System.out.println();
+
+        System.out.println("Texture Coordinates:");
+        for (float texCoord : texCoords) {
+            System.out.print(texCoord + " ");
+        }
+        System.out.println();
+
         vaoID = GL46.glGenVertexArrays();
         GL46.glBindVertexArray(vaoID);
 
         vertexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, vertices, GL46.GL_STATIC_DRAW);
+        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        verticesBuffer.put(vertices).flip();
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, verticesBuffer, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 
         texCoordVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoords, GL46.GL_STATIC_DRAW);
+        FloatBuffer texCoordsBuffer = BufferUtils.createFloatBuffer(texCoords.length);
+        texCoordsBuffer.put(texCoords).flip();
+        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoordsBuffer, GL46.GL_STATIC_DRAW);
         GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
 
         indexVBOID = GL46.glGenBuffers();
         GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-        GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indices, GL46.GL_STATIC_DRAW);
+        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
+        indicesBuffer.put(indices).flip();
+        GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
 
         GL46.glBindVertexArray(0);
     }
-
 
 
     private void handleButtonClicks() {
@@ -233,5 +256,4 @@ public class TitleScreen {
             }
         }
     }
-
 }
