@@ -15,19 +15,30 @@ compileJava {
     sourceCompatibility = '17'
     targetCompatibility = '17'
 }
-
+ext {
+    jmonkeyengine_version = '3.6.0-stable'
+    license = file("$rootDir/license.txt")
+}
 dependencies {
     implementation files("src/main/resources/native/${getNativeFolder()}")
-    // LWJGL 3.3.1
-    implementation 'org.lwjgl:lwjgl:3.3.2'
-    implementation 'org.lwjgl:lwjgl-glfw:3.3.2'
-    implementation 'org.lwjgl:lwjgl-opengl:3.3.2'
-    implementation 'org.lwjgl:lwjgl-assimp:3.3.2'
-    implementation 'org.lwjgl:lwjgl-openal:3.3.2'
-    implementation 'org.lwjgl:lwjgl-stb:3.3.2'
     implementation("de.articdive:jnoise-pipeline:4.0.0")
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+  //  implementation fileTree(dir: 'lib', include: ['*.jar'])
+    implementation "org.jmonkeyengine:jme3-core:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-awt-dialogs:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-plugins:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-effects:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-networking:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-lwjgl3:$jmonkeyengine_version"
+    implementation "org.jmonkeyengine:jme3-niftygui:$jmonkeyengine_version"
+    implementation "com.badlogicgames.gdx:gdx-ai:1.8.2"
+    implementation "javax.vecmath:vecmath:1.5.2"
+    implementation "com.simsilica:zay-es:1.4.0"
+    implementation "com.simsilica:zay-es-net:1.5.0"
+    implementation "com.simsilica:sio2:1.7.0"
+    implementation "com.simsilica:sim-ethereal:1.7.0"
 }
 
 jar {

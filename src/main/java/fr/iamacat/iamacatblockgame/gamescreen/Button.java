@@ -29,25 +29,6 @@ public class Button {
         return text;
     }
 
-    public void render() {
-        GL46.glEnable(GL46.GL_TEXTURE_2D);
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
-
-        GL46.glBegin(GL46.GL_QUADS);
-        GL46.glTexCoord2f(0, 0);
-        GL46.glVertex2f(x, y);
-        GL46.glTexCoord2f(1, 0);
-        GL46.glVertex2f(x + width, y);
-        GL46.glTexCoord2f(1, 1);
-        GL46.glVertex2f(x + width, y + height);
-        GL46.glTexCoord2f(0, 1);
-        GL46.glVertex2f(x, y + height);
-        GL46.glEnd();
-
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
-        GL46.glDisable(GL46.GL_TEXTURE_2D);
-    }
-
     public boolean isClicked(double mouseX, double mouseY) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
