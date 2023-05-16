@@ -49,13 +49,12 @@ def getNativeFolder() {
     String osName = System.getProperty("os.name").toLowerCase()
 
     if (osName.contains("win")) {
-        return "native/windows"
+        return "windows"
     } else if (osName.contains("mac")) {
-        return "native/macosx"
+        return "macosx"
     } else if (osName.contains("linux")) {
-        return "native/linux"
+        return "linux"
     } else {
         throw new UnsupportedOperationException("Unsupported operating system: " + osName)
     }
 }
-
