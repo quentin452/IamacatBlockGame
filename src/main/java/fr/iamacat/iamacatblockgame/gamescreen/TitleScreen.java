@@ -1,6 +1,6 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
-import fr.iamacat.iamacatblockgame.Renderer;
+import fr.iamacat.iamacatblockgame.renderer.Renderer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;

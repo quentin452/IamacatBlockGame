@@ -1,14 +1,16 @@
-package fr.iamacat.iamacatblockgame;
+package fr.iamacat.iamacatblockgame.renderer;
 
 import fr.iamacat.iamacatblockgame.gamescreen.Button;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL46;
 
 import java.util.List;
 
 public class Renderer {
-    private List<Button> buttons;
+    private static int vaoID;
+    private static int vertexVBOID;
+    private static int texCoordVBOID;
+    private static int indexVBOID;
+    private static boolean isTitleScreenDisplayed = false;
     public static void renderTitleScreen(int textureID, int vaoID) {
         GL46.glActiveTexture(GL46.GL_TEXTURE0);
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
@@ -20,8 +22,6 @@ public class Renderer {
         GL46.glEnableVertexAttribArray(0);
         GL46.glEnableVertexAttribArray(1);
 
-        GL46.glActiveTexture(GL46.GL_TEXTURE0);
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
         GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
 
         GL46.glDisableVertexAttribArray(0);
@@ -30,12 +30,22 @@ public class Renderer {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
 
         GL46.glDisable(GL46.GL_BLEND);
+
+        isTitleScreenDisplayed = true;
+
+        cleanup();
     }
     private static void bindTextureId(int textureId) {
         GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureId);
     }
     public static void renderButtons(List<Button> buttons) {
         enableBlending();
+
+        if (vaoID == 0) {
+            createVAO();
+        } else {
+            GL46.glBindVertexArray(vaoID);
+        }
 
         for (Button button : buttons) {
             float[] vertices = {
@@ -62,55 +72,47 @@ public class Renderer {
                     0, 1, 2,    // First triangle (top-right, top-left, bottom-right)
                     2, 3, 0     // Second triangle (bottom-right, bottom-left, top-left)
             };
-            // Create and bind the VAO
-            int vaoID = GL30.glGenVertexArrays();
-            GL30.glBindVertexArray(vaoID);
 
-            // Create the vertex VBO and bind it
-            int vertexVBOID = GL46.glGenBuffers();
             GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
             GL46.glBufferData(GL46.GL_ARRAY_BUFFER, vertices, GL46.GL_STATIC_DRAW);
-            GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 
-            // Create the texture coordinate VBO and bind it
-            int texCoordVBOID = GL46.glGenBuffers();
             GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
             GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoords, GL46.GL_STATIC_DRAW);
-            GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
 
-            // Create the index VBO and bind it
-            int indexVBOID = GL46.glGenBuffers();
-            GL46.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-            GL46.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices, GL46.GL_STATIC_DRAW);
+            GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+            GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indices, GL46.GL_STATIC_DRAW);
 
-            // Bind the texture
             bindTextureId(button.getTextureID());
 
-            // Enable vertex attributes
             GL46.glEnableVertexAttribArray(0);
-            GL46.glEnableVertexAttribArray(1); // Enable texture coordinates attribute
+            GL46.glEnableVertexAttribArray(1);
 
-            // Draw the button
             GL46.glDrawElements(GL46.GL_TRIANGLES, 6, GL46.GL_UNSIGNED_INT, 0);
 
-            // Disable vertex attributes
             GL46.glDisableVertexAttribArray(0);
             GL46.glDisableVertexAttribArray(1);
-
-            // Unbind the VAO and texture
-            GL46.glBindVertexArray(0);
-            GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
-
-            // Delete the VAO and VBOs
-            GL30.glDeleteVertexArrays(vaoID);
-            GL46.glDeleteBuffers(vertexVBOID);
-            GL46.glDeleteBuffers(texCoordVBOID);
-            GL46.glDeleteBuffers(indexVBOID);
         }
 
         disableBlending();
-    }
+        isTitleScreenDisplayed = false;
 
+        cleanup();
+    }
+    private static void createVAO() {
+        vaoID = GL46.glGenVertexArrays();
+        GL46.glBindVertexArray(vaoID);
+
+        vertexVBOID = GL46.glGenBuffers();
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
+        GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
+
+        texCoordVBOID = GL46.glGenBuffers();
+        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
+        GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
+
+        indexVBOID = GL46.glGenBuffers();
+        GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
+    }
     private static void enableBlending() {
         GL46.glEnable(GL46.GL_BLEND);
         GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
@@ -118,5 +120,35 @@ public class Renderer {
 
     private static void disableBlending() {
         GL46.glDisable(GL46.GL_BLEND);
+    }
+
+    //cleanup VAO and VBOS to saves resources when not viewed , like if i am not in the title screen
+
+    public static void cleanup() {
+        if (!isTitleScreenDisplayed) {
+            deleteVAOAndVBOs();
+        }
+    }
+
+    private static void deleteVAOAndVBOs() {
+        if (vaoID != 0) {
+            GL46.glDeleteVertexArrays(vaoID);
+            vaoID = 0;
+        }
+
+        if (vertexVBOID != 0) {
+            GL46.glDeleteBuffers(vertexVBOID);
+            vertexVBOID = 0;
+        }
+
+        if (texCoordVBOID != 0) {
+            GL46.glDeleteBuffers(texCoordVBOID);
+            texCoordVBOID = 0;
+        }
+
+        if (indexVBOID != 0) {
+            GL46.glDeleteBuffers(indexVBOID);
+            indexVBOID = 0;
+        }
     }
 }
