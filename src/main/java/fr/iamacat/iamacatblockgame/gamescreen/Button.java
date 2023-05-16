@@ -1,35 +1,42 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL46;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 public class Button {
-
-    private String text;
     private int x;
     private int y;
-    private int width;
-    private int height;
-    private int textureID;
+    private Texture texture;
+    private Rectangle bounds;
+    private String text;
+    public int getX() {
+        return x;
+    }
 
-    public Button(String text, int x, int y, int width, int height, int textureID) {
-        this.text = text;
+    public int getY() {
+        return y;
+    }
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public Button(String text, int x, int y, int width, int height, Texture texture) {
+        this.texture = texture;
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
-        this.textureID = textureID;
+        this.text = text;
+
+        bounds = new Rectangle(x, y, width, height);
     }
 
-    public int getTextureID() {
-        return textureID;
+    public void draw(SpriteBatch batch) {
+        batch.draw(texture, bounds.x, bounds.y);
     }
 
-    public String getText() {
-        return text;
+    public boolean isClicked(float mouseX, float mouseY) {
+        return bounds.contains(mouseX, mouseY);
     }
 
-    public boolean isClicked(double mouseX, double mouseY) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-    }
+    // Getters and setters
 }

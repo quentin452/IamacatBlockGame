@@ -22,18 +22,15 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
     implementation "com.badlogicgames.gdx:gdx:1.11.0"
     implementation "com.badlogicgames.gdx:gdx-box2d:1.11.0"
-    implementation "com.badlogicgames.gdx:gdx-controllers:1.11.0"
-    implementation "com.badlogicgames.gdx:gdx-controllers-desktop:1.11.0"
-    implementation "com.badlogicgames.gdx:gdx-controllers-android:1.11.0"
-    implementation "com.badlogicgames.gdx:gdx-controllers-gwt:1.11.0"
-    implementation "com.badlogicgames.gdx:gdx-controllers-ios:1.11.0"
-    implementation "com.badlogicgames.gdx:gdx-controllers-legacy:1.11.0"
     implementation "com.badlogicgames.gdx:gdx-ai:1.8.2"
     implementation "javax.vecmath:vecmath:1.5.2"
     implementation "com.simsilica:zay-es:1.4.0"
     implementation "com.simsilica:zay-es-net:1.5.0"
     implementation "com.simsilica:sio2:1.7.0"
     implementation "com.simsilica:sim-ethereal:1.7.0"
+    implementation("de.articdive:jnoise-pipeline:4.0.0")
+    implementation 'com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.12'
+    implementation 'com.badlogicgames.gdx:gdx-platform:1.9.12:natives-desktop'
 }
 
 jar {

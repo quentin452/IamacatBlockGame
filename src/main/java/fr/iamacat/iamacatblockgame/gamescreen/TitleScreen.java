@@ -1,266 +1,127 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
-import fr.iamacat.iamacatblockgame.renderer.Renderer;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+public class TitleScreen implements InputProcessor {
+    private Texture titleScreenTexture;
+    private float titleScreenX;
+    private float titleScreenY;
+    private float titleScreenWidth;
+    private float titleScreenHeight;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
+    private SpriteBatch batch;
 
-public class TitleScreen {
-
-    private static final Logger logger = LogManager.getLogger(TitleScreen.class);
+    private Button playButton;
+    private Button quitButton;
 
     private boolean gameStarted;
-    private long window;
-    private List<Button> buttons;
-    private int titleScreenTextureID;
-    private int vaoID;
-    private int vertexVBOID;
-    private int texCoordVBOID;
-    private int indexVBOID;
 
-    public TitleScreen(long window) {
-        this.window = window;
-        buttons = new ArrayList<>();
-        createButtons();
-        loadTitleScreenTexture();
-        setupMesh();
-        gameStarted = false;
+    public TitleScreen(SpriteBatch batch) {
+        this.batch = batch;
+
+        titleScreenTexture = new Texture("textures/gamescreen/titlescreen.png");
+
+        // Calculate the position and size of the title screen based on the window's aspect ratio
+        float windowWidth = Gdx.graphics.getWidth();
+        float windowHeight = Gdx.graphics.getHeight();
+        float aspectRatio = windowWidth / windowHeight;
+
+        // Set the title screen size and position
+        if (aspectRatio > 1) {
+            // Landscape aspect ratio
+            titleScreenWidth = windowWidth;
+            titleScreenHeight = windowHeight;
+            titleScreenX = 0;
+            titleScreenY = (windowHeight - titleScreenHeight) / 2;
+        } else {
+            // Portrait aspect ratio
+            titleScreenWidth = windowHeight;
+            titleScreenHeight = windowHeight;
+            titleScreenX = (windowWidth - titleScreenWidth) / 2;
+            titleScreenY = 0;
+        }
+
+        playButton = new Button("Play", 100, 100, 100, 50,
+                new Texture("textures/gamescreen/button/playbutton.png"));
+        quitButton = new Button("Quit", 100, 200, 100, 50,
+                new Texture("textures/gamescreen/button/quitbutton.png"));
+
+        Gdx.input.setInputProcessor(this); // Set this class as the input processor
     }
 
     public void update() {
-        updateTitleScreen();
-        updateButtons();
-        updateInput();
-        GLFW.glfwSwapBuffers(window);
-        GLFW.glfwPollEvents();
-        checkGLErrors();
+        renderTitleScreen();
+        renderButtons();
     }
 
-    // Function to check OpenGL errors
-    private void checkGLErrors() {
-        int error = GL46.glGetError();
-        while (error != GL46.GL_NO_ERROR) {
-            String errorString;
-            switch (error) {
-                case GL46.GL_INVALID_ENUM:
-                    errorString = "GL_INVALID_ENUM";
-                    break;
-                case GL46.GL_INVALID_VALUE:
-                    errorString = "GL_INVALID_VALUE";
-                    break;
-                case GL46.GL_INVALID_OPERATION:
-                    errorString = "GL_INVALID_OPERATION";
-                    break;
-                case GL46.GL_INVALID_FRAMEBUFFER_OPERATION:
-                    errorString = "GL_INVALID_FRAMEBUFFER_OPERATION";
-                    break;
-                case GL46.GL_OUT_OF_MEMORY:
-                    errorString = "GL_OUT_OF_MEMORY";
-                    break;
-                case GL46.GL_STACK_UNDERFLOW:
-                    errorString = "GL_STACK_UNDERFLOW";
-                    break;
-                case GL46.GL_STACK_OVERFLOW:
-                    errorString = "GL_STACK_OVERFLOW";
-                    break;
-                default:
-                    errorString = "Unknown error";
-                    break;
-            }
-            logger.error("OpenGL Error: " + errorString);
-            error = GL46.glGetError();
+    public void renderTitleScreen() {
+        batch.begin();
+        batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
+        batch.end();
+    }
+
+    public void renderButtons() {
+        batch.begin();
+        playButton.draw(batch);
+        quitButton.draw(batch);
+        batch.end();
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        float mouseX = screenX;
+        float mouseY = Gdx.graphics.getHeight() - screenY;
+
+        if (playButton.isClicked(mouseX, mouseY)) {
+            gameStarted = true;
+            return true; // Consume the touch event
         }
-    }
-
-    private void updateTitleScreen() {
-        Renderer.renderTitleScreen(titleScreenTextureID, vaoID);
-    }
-
-    private void updateButtons() {
-       Renderer.renderButtons(buttons);
-    }
-
-    private void updateInput() {
-        handleButtonClicks();
-    }
-    private void loadTitleScreenTexture() {
-        String titleScreenTexturePath = "/textures/gamescreen/titlescreen.png";
-
-        int textureID = GL46.glGenTextures();
-
-        GL46.glActiveTexture(GL46.GL_TEXTURE0);
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
-
-        // Mipmapping
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
-        GL46.glGenerateMipmap(GL46.GL_TEXTURE_2D);
-
-        try {
-            URL url = getClass().getResource(titleScreenTexturePath);
-            if (url == null) {
-                throw new RuntimeException("Failed to load texture: " + titleScreenTexturePath);
-            }
-
-            BufferedImage image = ImageIO.read(url);
-            titleScreenTextureID = loadTexture(image);
-            System.out.println("Title screen texture ID: " + titleScreenTextureID);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load texture: " + titleScreenTexturePath, e);
-        }
-    }
-
-    private void createButtons() {
-        int playButtonTextureID = loadTextureFromInputStream(getClass().getResourceAsStream("/textures/gamescreen/button/playbutton.png"));
-        int quitButtonTextureID = loadTextureFromInputStream(getClass().getResourceAsStream("/textures/gamescreen/button/quitbutton.png"));
-        int buttonWidth = 100;
-        int buttonHeight = 50;
-        Button playButton = new Button("Join", 100, 100, buttonWidth, buttonHeight, playButtonTextureID);
-        Button quitButton = new Button("Exit", 100, 200, buttonWidth, buttonHeight, quitButtonTextureID);
-        buttons.add(playButton);
-        buttons.add(quitButton);
-    }
-
-    private int loadTextureFromInputStream(InputStream inputStream) {
-        try {
-            BufferedImage image = ImageIO.read(inputStream);
-            return loadTexture(image);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load texture from input stream", e);
-        }
-    }
-
-    private int loadTexture(BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        int[] pixels = new int[width * height];
-        image.getRGB(0, 0, width, height, pixels, 0, width);
-        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4); // 4 for RGBA components
-
-        for (int pixel : pixels) {
-            buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red component
-            buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green component
-            buffer.put((byte) (pixel & 0xFF));         // Blue component
-            buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha component
+        if (quitButton.isClicked(mouseX, mouseY)) {
+            Gdx.app.exit();
+            return true; // Consume the touch event
         }
 
-        buffer.flip();
-
-        int textureID = GL46.glGenTextures();
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, textureID);
-
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_S, GL46.GL_REPEAT);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_WRAP_T, GL46.GL_REPEAT);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
-        GL46.glTexParameteri(GL46.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_LINEAR);
-
-        GL46.glTexImage2D(GL46.GL_TEXTURE_2D, 0, GL46.GL_RGBA, width, height, 0, GL46.GL_RGBA, GL46.GL_UNSIGNED_BYTE, buffer);
-
-        GL46.glBindTexture(GL46.GL_TEXTURE_2D, 0);
-
-        return textureID;
+        return false; // Continue processing the touch event
     }
 
-    private void setupMesh() {
-        float[] vertices = {
-                -1.0f, -1.0f, 0.0f,
-                1.0f, -1.0f, 0.0f,
-                1.0f, 1.0f, 0.0f,
-                -1.0f,  1.0f, 0.0f
-        };
+    // Other InputProcessor methods
+    // ...
 
-        float[] texCoords = {
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                1.0f, 1.0f,
-                0.0f, 1.0f
-        };
-
-        int[] indices = {
-                0, 1, 2,
-                2, 3, 0
-        };
-
-        // After setting up the vertices, texture coordinates, and shader program
-
-        System.out.println("Vertices:");
-        for (float vertex : vertices) {
-            System.out.print(vertex + " ");
-        }
-        System.out.println();
-
-        System.out.println("Texture Coordinates:");
-        for (float texCoord : texCoords) {
-            System.out.print(texCoord + " ");
-        }
-        System.out.println();
-
-        vaoID = GL46.glGenVertexArrays();
-        GL46.glBindVertexArray(vaoID);
-
-        vertexVBOID = GL46.glGenBuffers();
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, vertexVBOID);
-        FloatBuffer verticesBuffer = BufferUtils.createFloatBuffer(vertices.length);
-        verticesBuffer.put(vertices).flip();
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, verticesBuffer, GL46.GL_STATIC_DRAW);
-        GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
-
-        texCoordVBOID = GL46.glGenBuffers();
-        GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, texCoordVBOID);
-        FloatBuffer texCoordsBuffer = BufferUtils.createFloatBuffer(texCoords.length);
-        texCoordsBuffer.put(texCoords).flip();
-        GL46.glBufferData(GL46.GL_ARRAY_BUFFER, texCoordsBuffer, GL46.GL_STATIC_DRAW);
-        GL46.glVertexAttribPointer(1, 2, GL46.GL_FLOAT, false, 0, 0);
-
-        indexVBOID = GL46.glGenBuffers();
-        GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-        IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-        indicesBuffer.put(indices).flip();
-        GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
-
-        GL46.glBindVertexArray(0);
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
     }
 
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
 
-    private void handleButtonClicks() {
-        double mouseX;
-        double mouseY;
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
 
-        double[] xpos = new double[1];
-        double[] ypos = new double[1];
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
 
-        GLFW.glfwGetCursorPos(window, xpos, ypos);
-        mouseX = xpos[0];
-        mouseY = ypos[0];
-        // Check for mouse press
-        int mouseButton = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        if (mouseButton == GLFW.GLFW_PRESS) {
-        if (!gameStarted) {
-            for (Button button : buttons) {
-                if (button.isClicked(mouseX, mouseY)) {
-                    if (button.getText().equals("Join")) {
-                        System.out.println("Starting the game...");
-                        gameStarted = true;
-                    } else if (button.getText().equals("Exit")) {
-                        GLFW.glfwSetWindowShouldClose(window, true);
-                        }
-                    }
-                }
-            }
-        }
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
     }
 }
