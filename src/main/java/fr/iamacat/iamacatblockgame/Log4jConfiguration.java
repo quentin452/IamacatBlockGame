@@ -28,18 +28,17 @@ public class Log4jConfiguration {
             logsDir.mkdirs();
         }
 
-        // Delete existing log files
+        // Check if a log file already exists in the directory
         File[] logFiles = logsDir.listFiles((dir, name) -> name.startsWith(LOG_FILE_PREFIX) && name.endsWith(LOG_FILE_EXTENSION));
-        if (logFiles != null) {
-            for (File logFile : logFiles) {
-                logFile.delete();
-            }
+        if (logFiles != null && logFiles.length > 0) {
+            // Reuse the existing log file
+            logFileName = logFiles[0].getPath();
+        } else {
+            // Generate a unique log file name with a timestamp
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
+            String timestamp = dateFormat.format(new Date());
+            logFileName = LOG_DIRECTORY + "/" + LOG_FILE_PREFIX + timestamp + LOG_FILE_EXTENSION;
         }
-
-        // Generate a unique log file name with a timestamp
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss");
-        String timestamp = dateFormat.format(new Date());
-        logFileName = LOG_DIRECTORY + "/" + LOG_FILE_PREFIX + timestamp + LOG_FILE_EXTENSION;
 
         // Set up Log4j programmatically
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
