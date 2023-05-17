@@ -132,8 +132,18 @@ public class OptionsScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        // Update the camera's viewport based on the new window size
-        camera.setToOrtho(false, width, height);
+        // Update the option screen dimensions based on the new window size
+        float aspectRatio = (float) width / height;
+
+        camera.setToOrtho(false, width, height); // Update the camera's viewport
+
+        if (aspectRatio > 1) {
+            backButton.setPosition(100, 100);
+            vsyncButton.setPosition(100, 200);
+        } else {
+            backButton.setPosition(100, 100);
+            vsyncButton.setPosition(100, 200);
+        }
     }
 
     @Override

@@ -16,7 +16,7 @@ public class TitleScreen implements Screen, InputProcessor {
     private float titleScreenY;
     private float titleScreenWidth;
     private float titleScreenHeight;
-    private OrthographicCamera camera;
+    private OrthographicCamera camera; // Added camera variable
     private Button playButton;
     private Button quitButton;
     private Button optionsButton;
@@ -31,6 +31,9 @@ public class TitleScreen implements Screen, InputProcessor {
         float windowWidth = Gdx.graphics.getWidth();
         float windowHeight = Gdx.graphics.getHeight();
         float aspectRatio = windowWidth / windowHeight;
+
+        camera = new OrthographicCamera(); // Initialize the camera
+        camera.setToOrtho(false, windowWidth, windowHeight); // Set the camera's viewport
 
         if (aspectRatio > 1) {
             titleScreenWidth = windowWidth;
@@ -92,7 +95,7 @@ public class TitleScreen implements Screen, InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Convert screen coordinates to game coordinates
         Vector3 touchPos = new Vector3(screenX, screenY, 0);
-        touchPos = camera.unproject(touchPos);
+        camera.unproject(touchPos); // Use the camera to unproject the coordinates
 
         float mouseX = touchPos.x;
         float mouseY = touchPos.y;
