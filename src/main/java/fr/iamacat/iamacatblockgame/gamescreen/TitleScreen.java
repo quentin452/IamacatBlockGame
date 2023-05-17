@@ -5,15 +5,16 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import fr.iamacat.iamacatblockgame.multithreadingandbatching.GLCALLMultithreadedandbatched;
 
 public class TitleScreen implements InputProcessor {
+    private GLCALLMultithreadedandbatched gl;
+    private SpriteBatch batch;
     private Texture titleScreenTexture;
     private float titleScreenX;
     private float titleScreenY;
     private float titleScreenWidth;
     private float titleScreenHeight;
-
-    private SpriteBatch batch;
 
     private Button playButton;
     private Button quitButton;
@@ -22,6 +23,7 @@ public class TitleScreen implements InputProcessor {
 
     public TitleScreen(SpriteBatch batch) {
         this.batch = batch;
+        gl = new GLCALLMultithreadedandbatched();
 
         titleScreenTexture = new Texture("textures/gamescreen/titlescreen.png");
 
@@ -59,16 +61,20 @@ public class TitleScreen implements InputProcessor {
     }
 
     public void renderTitleScreen() {
-        batch.begin();
-        batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
-        batch.end();
+        gl.executeGLCall(() -> {
+            batch.begin();
+            batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
+            batch.end();
+       });
     }
 
     public void renderButtons() {
-        batch.begin();
-        playButton.draw(batch);
-        quitButton.draw(batch);
-        batch.end();
+        gl.executeGLCall(() -> {
+            batch.begin();
+            playButton.draw(batch);
+            quitButton.draw(batch);
+            batch.end();
+        });
     }
 
     @Override

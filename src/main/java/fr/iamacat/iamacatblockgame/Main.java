@@ -11,30 +11,32 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jme3.renderer.opengl.GL3;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
+import fr.iamacat.iamacatblockgame.multithreadingandbatching.GLCALLMultithreadedandbatched;
 
 import java.io.IOException;
 
 
 public class Main extends ApplicationAdapter {
+    GLCALLMultithreadedandbatched gl;
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        titleScreen = new TitleScreen(batch); // Pass the batch object to the TitleScreen constructor
+        titleScreen = new TitleScreen(batch);
+        gl = new GLCALLMultithreadedandbatched(); // Assign value to the instance variable
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        gl.executeGLCall(() -> {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        });
 
         titleScreen.update();
-
-        // Draw game screen
     }
-
     @Override
     public void dispose() {
         batch.dispose();
