@@ -1,0 +1,78 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	IamACatFont: {
+		file: IMFellEnglishSC-Regular(1).fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
+	}
+}
+com.badlogic.gdx.graphics.Color: {
+	RGBA_255_255_255_255: {
+		r: 0
+		g: 0
+		b: 0
+		a: 1
+	}
+}
+com.kotcrab.vis.ui.Sizes: {
+	default: {
+		scaleFactor: 1
+		spacingBottom: 8
+		spacingRight: 6
+		buttonBarSpacing: 10
+		menuItemIconSize: 22
+		borderSize: 1
+		spinnerButtonHeight: 12
+		spinnerFieldSize: 50
+		fileChooserViewModeBigIconsSize: 200
+		fileChooserViewModeMediumIconsSize: 128
+		fileChooserViewModeSmallIconsSize: 64
+		fileChooserViewModeListWidthSize: 150
+	}
+}
+com.kotcrab.vis.ui.widget.Separator$SeparatorStyle: {
+	default: {
+		thickness: 4
+	}
+	menu: {
+		thickness: 1
+	}
+}
+com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane$TabbedPaneStyle: {
+	default: {
+		vertical: false
+		draggable: false
+	}
+}
+com.kotcrab.vis.ui.widget.BusyBar$BusyBarStyle: {
+	default: {
+		height: 5
+		segmentWidth: 150
+		segmentOverflow: 10
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+	default: {
+		parent: default
+		checkboxOn: checkbox_on
+		checkboxOff: checkbox_off
+		checkboxOver: checkbox_over
+		checkboxOnDisabled: checkbox_off
+		checkboxOffDisabled: checkbox_on
+		font: IamACatFont
+		fontColor: RGBA_255_255_255_255
+		downFontColor: RGBA_255_255_255_255
+		overFontColor: RGBA_255_255_255_255
+		checkedFontColor: RGBA_255_255_255_255
+		checkedOverFontColor: RGBA_255_255_255_255
+		disabledFontColor: RGBA_255_255_255_255
+		up: checkbox_off
+		down: checkbox_on
+		over: checkbox_off
+		checked: checkbox_on
+		checkedOver: checkbox_over
+		disabled: checkbox_off
+	}
+}
+}
