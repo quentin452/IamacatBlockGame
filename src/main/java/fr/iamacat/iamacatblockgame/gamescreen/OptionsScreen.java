@@ -1,21 +1,19 @@
 package fr.iamacat.iamacatblockgame.gamescreen;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class OptionsScreen implements Screen, InputProcessor {
+public class OptionsScreen extends ScreenAdapter implements InputProcessor {
     private final SpriteBatch batch;
     private final Texture optionsScreenTexture;
     private final TextButton backButton;
@@ -24,6 +22,10 @@ public class OptionsScreen implements Screen, InputProcessor {
     private Stage stage;
     private CheckBox vsyncCheckbox;
     private Skin skin;
+    private Slider fpsSlider;
+    private Label fpsLabel;
+    private float accumulator;
+    private float frameTime;
 
     public OptionsScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -46,21 +48,75 @@ public class OptionsScreen implements Screen, InputProcessor {
         vsyncEnabled = Gdx.graphics.isContinuousRendering();
         Gdx.input.setInputProcessor(this);
         stage = new Stage();
+
         vsyncCheckbox = new CheckBox("VSync", skin);
         vsyncCheckbox.setPosition(100, 200);
         vsyncCheckbox.setSize(100, 50);
         vsyncCheckbox.setChecked(vsyncEnabled);
+
+        fpsSlider = new Slider(30, 60, 1, false, skin);
+        fpsSlider.setPosition(100, 300);
+        fpsSlider.setSize(200, 50);
+        fpsSlider.setValue(Gdx.graphics.getFramesPerSecond());
+        fpsSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateFPS();
+            }
+        });
+
+        fpsLabel = new Label("", skin);
+        fpsLabel.setPosition(310, 300);
+        fpsLabel.setSize(50, 50);
+        updateFPSLabel();
+
         stage.addActor(vsyncCheckbox);
+        stage.addActor(fpsSlider);
+        stage.addActor(fpsLabel);
         stage.addActor(backButton);
     }
 
     public void render(float delta) {
+        updateFPS();
+        update(delta); // Call the update method to update game logic
         renderOptionsScreen();
         stage.act(delta);
         stage.draw();
+        Gdx.graphics.requestRendering(); // Request a new frame to be rendered
+    }
+
+    private void updateFPS() {
+        int targetFPS = (int) fpsSlider.getValue();
+        if (targetFPS == 0) {
+            Gdx.graphics.setContinuousRendering(true);
+            Gdx.graphics.requestRendering();
+        } else {
+            Gdx.graphics.setContinuousRendering(false);
+            frameTime = 1f / targetFPS;
+        }
+        updateFPSLabel();
+    }
+
+    private void update(float delta) {
+        float targetFPS = fpsSlider.getValue();
+        float frameDelay = 1f / targetFPS;
+
+        accumulator += delta;
+        if (accumulator >= frameDelay) {
+            // Update game logic here
+            accumulator -= frameDelay;
+        }
+    }
+
+    private void updateFPSLabel() {
+        int targetFPS = (int) fpsSlider.getValue();
+        fpsLabel.setText(targetFPS + " FPS");
     }
 
     private void renderOptionsScreen() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(optionsScreenTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
@@ -118,23 +174,27 @@ public class OptionsScreen implements Screen, InputProcessor {
     }
 
     @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void resize(int width, int height) {
+        camera.setToOrtho(false, width, height); // Update the camera's viewport when the screen is resized
         stage.getViewport().update(width, height, true);
     }
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
 
     @Override
     public void dispose() {
