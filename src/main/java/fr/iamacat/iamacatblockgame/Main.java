@@ -2,38 +2,28 @@ package fr.iamacat.iamacatblockgame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.jme3.renderer.opengl.GL3;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
-import fr.iamacat.iamacatblockgame.multithreadingandbatching.GLCALLMultithreadedandbatched;
-
-import java.io.IOException;
 
 
 public class Main extends ApplicationAdapter {
-    private GLCALLMultithreadedandbatched gl;
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        gl = new GLCALLMultithreadedandbatched(); // Create after LibGDX initialization
         titleScreen = new TitleScreen(batch);
     }
 
     @Override
     public void render() {
-        gl.executeGLCall(() -> {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-        });
 
         titleScreen.update();
     }

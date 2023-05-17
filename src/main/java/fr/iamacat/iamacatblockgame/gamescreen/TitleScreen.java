@@ -4,12 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import fr.iamacat.iamacatblockgame.multithreadingandbatching.GLCALLMultithreadedandbatched;
 
 public class TitleScreen implements InputProcessor {
-    Object batchLock = new Object();
-    private GLCALLMultithreadedandbatched gl;
     private SpriteBatch batch;
     private Texture titleScreenTexture;
     private float titleScreenX;
@@ -24,7 +20,6 @@ public class TitleScreen implements InputProcessor {
 
     public TitleScreen(SpriteBatch batch) {
         this.batch = batch;
-        gl = new GLCALLMultithreadedandbatched();
 
         titleScreenTexture = new Texture("textures/gamescreen/titlescreen.png");
 
@@ -62,19 +57,15 @@ public class TitleScreen implements InputProcessor {
     }
 
     public void renderTitleScreen() {
-        gl.executeGLCall(() -> {
             batch.begin();
             batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
             batch.end();
-        });
     }
     public void renderButtons() {
-        gl.executeGLCall(() -> {
             batch.begin();
             playButton.draw(batch);
             quitButton.draw(batch);
             batch.end();
-        });
     }
 
     @Override
