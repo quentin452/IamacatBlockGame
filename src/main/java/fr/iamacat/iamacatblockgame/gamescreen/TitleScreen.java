@@ -10,16 +10,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class TitleScreen implements Screen, InputProcessor {
-    private SpriteBatch batch;
-    private Texture titleScreenTexture;
+    private final SpriteBatch batch;
+    private final Texture titleScreenTexture;
     private float titleScreenX;
     private float titleScreenY;
     private float titleScreenWidth;
     private float titleScreenHeight;
-    private OrthographicCamera camera; // Added camera variable
-    private Button playButton;
-    private Button quitButton;
-    private Button optionsButton;
+    private final OrthographicCamera camera; // Added camera variable
+    private final Button playButton;
+    private final Button quitButton;
+    private final Button optionsButton;
 
     private boolean gameStarted;
 
@@ -142,8 +142,6 @@ public class TitleScreen implements Screen, InputProcessor {
         return false;
     }
 
-    // Other InputProcessor methods...
-
     @Override
     public void show() {
         // Called when this screen becomes the current screen.
@@ -157,20 +155,6 @@ public class TitleScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        // Update the title screen dimensions based on the new window size
-        float aspectRatio = (float) width / height;
-
-        if (aspectRatio > 1) {
-            titleScreenWidth = width;
-            titleScreenHeight = height;
-            titleScreenX = 0;
-            titleScreenY = (height - titleScreenHeight) / 2;
-        } else {
-            titleScreenWidth = height;
-            titleScreenHeight = height;
-            titleScreenX = (width - titleScreenWidth) / 2;
-            titleScreenY = 0;
-        }
     }
 
     @Override

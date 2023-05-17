@@ -10,12 +10,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class OptionsScreen implements Screen, InputProcessor {
-    private SpriteBatch batch;
-    private Texture optionsScreenTexture;
-    private Button vsyncButton;
-    private Button backButton;
+    private final SpriteBatch batch;
+    private final Texture optionsScreenTexture;
+    private final Button vsyncButton;
+    private final Button backButton;
     private boolean vsyncEnabled;
-    private OrthographicCamera camera; // Added camera variable
+    private final OrthographicCamera camera; // Added camera variable
 
     public OptionsScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -132,18 +132,6 @@ public class OptionsScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        // Update the option screen dimensions based on the new window size
-        float aspectRatio = (float) width / height;
-
-        camera.setToOrtho(false, width, height); // Update the camera's viewport
-
-        if (aspectRatio > 1) {
-            backButton.setPosition(100, 100);
-            vsyncButton.setPosition(100, 200);
-        } else {
-            backButton.setPosition(100, 100);
-            vsyncButton.setPosition(100, 200);
-        }
     }
 
     @Override
