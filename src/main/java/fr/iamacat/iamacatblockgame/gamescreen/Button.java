@@ -17,6 +17,7 @@ class Button {
     public float getY() {
         return y;
     }
+
         public Button(String label, float x, float y, float width, float height, Texture texture) {
             this.label = label;
             this.x = x;
@@ -24,11 +25,6 @@ class Button {
             this.width = width;
             this.height = height;
             this.texture = texture;
-        }
-
-        public void setPosition(float x, float y) {
-            this.x = x;
-            this.y = y;
         }
 
     public void draw(SpriteBatch batch) {

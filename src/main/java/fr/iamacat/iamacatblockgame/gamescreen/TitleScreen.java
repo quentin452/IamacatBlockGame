@@ -12,11 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 public class TitleScreen implements Screen, InputProcessor {
     private final SpriteBatch batch;
     private final Texture titleScreenTexture;
-    private float titleScreenX;
-    private float titleScreenY;
-    private float titleScreenWidth;
-    private float titleScreenHeight;
-    private final OrthographicCamera camera; // Added camera variable
+    private final OrthographicCamera camera;
     private final Button playButton;
     private final Button quitButton;
     private final Button optionsButton;
@@ -28,24 +24,8 @@ public class TitleScreen implements Screen, InputProcessor {
 
         titleScreenTexture = new Texture("textures/gamescreen/titlescreen.png");
 
-        float windowWidth = Gdx.graphics.getWidth();
-        float windowHeight = Gdx.graphics.getHeight();
-        float aspectRatio = windowWidth / windowHeight;
-
-        camera = new OrthographicCamera(); // Initialize the camera
-        camera.setToOrtho(false, windowWidth, windowHeight); // Set the camera's viewport
-
-        if (aspectRatio > 1) {
-            titleScreenWidth = windowWidth;
-            titleScreenHeight = windowHeight;
-            titleScreenX = 0;
-            titleScreenY = (windowHeight - titleScreenHeight) / 2;
-        } else {
-            titleScreenWidth = windowHeight;
-            titleScreenHeight = windowHeight;
-            titleScreenX = (windowWidth - titleScreenWidth) / 2;
-            titleScreenY = 0;
-        }
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false);
 
         playButton = new Button("Play", 100, 100, 100, 50,
                 new Texture("textures/gamescreen/button/playbutton.png"));
@@ -63,12 +43,14 @@ public class TitleScreen implements Screen, InputProcessor {
     }
 
     public void renderTitleScreen() {
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
+        batch.draw(titleScreenTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
         batch.end();
     }
 
     public void renderButtons() {
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         playButton.draw(batch);
         quitButton.draw(batch);
@@ -93,9 +75,8 @@ public class TitleScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // Convert screen coordinates to game coordinates
         Vector3 touchPos = new Vector3(screenX, screenY, 0);
-        camera.unproject(touchPos); // Use the camera to unproject the coordinates
+        camera.unproject(touchPos);
 
         float mouseX = touchPos.x;
         float mouseY = touchPos.y;
@@ -144,37 +125,33 @@ public class TitleScreen implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        // Called when this screen becomes the current screen.
     }
 
     @Override
     public void render(float delta) {
-        // Render the screen.
         update();
     }
 
     @Override
     public void resize(int width, int height) {
+        camera.setToOrtho(false, width, height);
+        camera.update();
     }
 
     @Override
     public void pause() {
-        // Called when the game is paused.
     }
 
     @Override
     public void resume() {
-        // Called when the game is resumed from a paused state.
     }
 
     @Override
     public void hide() {
-        // Called when this screen is no longer the current screen.
     }
 
     @Override
     public void dispose() {
-        // Dispose of any disposable resources.
         titleScreenTexture.dispose();
     }
 }
