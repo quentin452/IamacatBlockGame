@@ -4,29 +4,28 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-public class Button {
-    private int x;
-    private int y;
-    private Texture texture;
-    private Rectangle bounds;
+class Button {
     private String text;
+    private float x;
+    private float y;
+    private float width;
+    private float height;
+    private Texture texture;
 
-    public Button(String text, int x, int y, int width, int height, Texture texture) {
-        this.texture = texture;
+    public Button(String text, float x, float y, float width, float height, Texture texture) {
+        this.text = text;
         this.x = x;
         this.y = y;
-        this.text = text;
-
-        bounds = new Rectangle(x, y, width, height);
+        this.width = width;
+        this.height = height;
+        this.texture = texture;
     }
 
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, bounds.x, bounds.y);
+        batch.draw(texture, x, y, width, height);
     }
 
     public boolean isClicked(float mouseX, float mouseY) {
-        return bounds.contains(mouseX, mouseY);
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
-
-    // Getters and setters
 }
