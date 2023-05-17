@@ -15,6 +15,7 @@ public class TitleScreen implements InputProcessor {
 
     private Button playButton;
     private Button quitButton;
+    private Button optionsButton; // Added options button
 
     private boolean gameStarted;
 
@@ -47,6 +48,8 @@ public class TitleScreen implements InputProcessor {
                 new Texture("textures/gamescreen/button/playbutton.png"));
         quitButton = new Button("Quit", 100, 200, 100, 50,
                 new Texture("textures/gamescreen/button/quitbutton.png"));
+        optionsButton = new Button("Options", 100, 300, 100, 50,
+                new Texture("textures/gamescreen/button/optionsbutton.png"));
 
         Gdx.input.setInputProcessor(this); // Set this class as the input processor
     }
@@ -57,15 +60,17 @@ public class TitleScreen implements InputProcessor {
     }
 
     public void renderTitleScreen() {
-            batch.begin();
-            batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
-            batch.end();
+        batch.begin();
+        batch.draw(titleScreenTexture, titleScreenX, titleScreenY, titleScreenWidth, titleScreenHeight);
+        batch.end();
     }
+
     public void renderButtons() {
-            batch.begin();
-            playButton.draw(batch);
-            quitButton.draw(batch);
-            batch.end();
+        batch.begin();
+        playButton.draw(batch);
+        quitButton.draw(batch);
+        optionsButton.draw(batch); // Added rendering for options button
+        batch.end();
     }
 
     @Override
@@ -79,6 +84,12 @@ public class TitleScreen implements InputProcessor {
         }
         if (quitButton.isClicked(mouseX, mouseY)) {
             Gdx.app.exit();
+            return true; // Consume the touch event
+        }
+        if (optionsButton.isClicked(mouseX, mouseY)) { // Handle options button click
+            // Open OptionsScreen or perform related actions
+            OptionsScreen optionsScreen = new OptionsScreen(batch);
+            // Perform any additional actions, such as setting the current screen to optionsScreen
             return true; // Consume the touch event
         }
 

@@ -24,13 +24,11 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-box2d:1.11.0"
     implementation "com.badlogicgames.gdx:gdx-ai:1.8.2"
     implementation "javax.vecmath:vecmath:1.5.2"
-    implementation "com.simsilica:zay-es:1.4.0"
-    implementation "com.simsilica:zay-es-net:1.5.0"
-    implementation "com.simsilica:sio2:1.7.0"
-    implementation "com.simsilica:sim-ethereal:1.7.0"
     implementation("de.articdive:jnoise-pipeline:4.0.0")
     implementation 'com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.12'
     implementation 'com.badlogicgames.gdx:gdx-platform:1.9.12:natives-desktop'
+    implementation "com.badlogicgames.gdx:gdx-freetype:1.9.12"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:1.9.12:natives-desktop"
 }
 
 jar {
