@@ -1,6 +1,5 @@
 package fr.iamacat.iamacatblockgame;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -12,6 +11,16 @@ import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 
 
 public class Main extends Game {
+    public static void main(String[] args) {
+        Log4jConfiguration.configure();
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.title = "IamAcat Block Game";
+        config.width = 1280;
+        config.height = 720;
+        config.addIcon("textures/gamescreen/icon.png", Files.FileType.Internal); // Set the path to your icon file
+
+        new LwjglApplication(new Main(), config);
+    }
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 
@@ -33,15 +42,5 @@ public class Main extends Game {
     @Override
     public void dispose() {
         batch.dispose();
-    }
-
-    public static void main(String[] args) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "IamAcat Block Game";
-        config.width = 1280;
-        config.height = 720;
-        config.addIcon("textures/gamescreen/icon.png", Files.FileType.Internal); // Set the path to your icon file
-
-        new LwjglApplication(new Main(), config);
     }
 }
