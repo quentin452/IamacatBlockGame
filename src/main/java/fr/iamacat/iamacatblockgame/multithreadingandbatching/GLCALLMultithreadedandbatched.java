@@ -14,13 +14,9 @@ public class GLCALLMultithreadedandbatched {
     private boolean disposed;
 
     public GLCALLMultithreadedandbatched() {
-
         glCallQueue = new LinkedBlockingQueue<>();
-
-        // Create render thread
         renderThread = new Thread(this::renderLoop);
         renderThread.start();
-
         disposed = false;
     }
 
@@ -38,11 +34,10 @@ public class GLCALLMultithreadedandbatched {
     }
 
     private void renderLoop() {
-        while(true) {
-
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                 Runnable glCall = glCallQueue.take();
-                glCall.run();
+                Gdx.app.postRunnable(glCall);
             } catch (InterruptedException e) {
                 // Render thread was interrupted, exit loop
                 break;
@@ -53,5 +48,4 @@ public class GLCALLMultithreadedandbatched {
     private void shutdown() {
         // ...
     }
-
 }

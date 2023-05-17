@@ -17,15 +17,15 @@ import java.io.IOException;
 
 
 public class Main extends ApplicationAdapter {
-    GLCALLMultithreadedandbatched gl;
+    private GLCALLMultithreadedandbatched gl;
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
+        gl = new GLCALLMultithreadedandbatched(); // Create after LibGDX initialization
         titleScreen = new TitleScreen(batch);
-        gl = new GLCALLMultithreadedandbatched(); // Assign value to the instance variable
     }
 
     @Override
@@ -37,6 +37,7 @@ public class Main extends ApplicationAdapter {
 
         titleScreen.update();
     }
+
     @Override
     public void dispose() {
         batch.dispose();
