@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class OptionsScreen implements Screen, InputProcessor {
     private final SpriteBatch batch;
@@ -25,69 +27,43 @@ public class OptionsScreen implements Screen, InputProcessor {
 
     public OptionsScreen(SpriteBatch batch) {
         this.batch = batch;
-
         optionsScreenTexture = new Texture("textures/optionscreen/optionbackground.png");
-
         float windowWidth = Gdx.graphics.getWidth();
         float windowHeight = Gdx.graphics.getHeight();
         float aspectRatio = windowWidth / windowHeight;
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, windowWidth, windowHeight);
-
+        camera = new OrthographicCamera(windowWidth, windowHeight);
+        skin = new Skin(Gdx.files.internal("assets/uis/skins/default/skin/uiskin.json"));
         backButton = new TextButton("Back", skin);
-        backButton.setPosition(100, 100);
         backButton.setSize(100, 50);
-
+        backButton.setPosition(100, 100);
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Back button clicked");
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new TitleScreen(batch));
+            }
+        });
         vsyncEnabled = Gdx.graphics.isContinuousRendering();
-
         Gdx.input.setInputProcessor(this);
         stage = new Stage();
-        skin = new Skin(Gdx.files.internal("assets/uis/skins/default/skin/uiskin.json"));
-
         vsyncCheckbox = new CheckBox("VSync", skin);
         vsyncCheckbox.setPosition(100, 200);
         vsyncCheckbox.setSize(100, 50);
         vsyncCheckbox.setChecked(vsyncEnabled);
         stage.addActor(vsyncCheckbox);
+        stage.addActor(backButton);
     }
 
-    public void renderOptionsScreen() {
+    public void render(float delta) {
+        renderOptionsScreen();
+        stage.act(delta);
+        stage.draw();
+    }
+
+    private void renderOptionsScreen() {
         batch.begin();
         batch.draw(optionsScreenTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
-    }
-
-    public void renderButtons() {
-        batch.begin();
-        backButton.draw(batch, 1f); // Pass 1f as the second argument to specify full opacity
-        batch.end();
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 touchPos = new Vector3(screenX, screenY, 0);
-        camera.unproject(touchPos);
-
-        float mouseX = touchPos.x;
-        float mouseY = touchPos.y;
-
-        System.out.println("Clicked at: (" + mouseX + ", " + mouseY + ")");
-
-        if (backButton.isPressed()) {
-            System.out.println("Back button clicked");
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new TitleScreen(batch));
-            return true;
-        }
-
-        if (vsyncCheckbox.isOver()) {
-            System.out.println("VSync checkbox clicked");
-            vsyncEnabled = vsyncCheckbox.isChecked();
-            Gdx.graphics.setContinuousRendering(vsyncEnabled);
-            return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -102,6 +78,22 @@ public class OptionsScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Vector3 touchPos = new Vector3(screenX, screenY, 0);
+        camera.unproject(touchPos);
+        float mouseX = touchPos.x;
+        float mouseY = touchPos.y;
+        System.out.println("Clicked at: (" + mouseX + ", " + mouseY + ")");
+        if (vsyncCheckbox.isOver()) {
+            System.out.println("VSync checkbox clicked");
+            vsyncEnabled = vsyncCheckbox.isChecked();
+            Gdx.graphics.setContinuousRendering(vsyncEnabled);
+            return true;
+        }
         return false;
     }
 
@@ -131,36 +123,25 @@ public class OptionsScreen implements Screen, InputProcessor {
     }
 
     @Override
-    public void render(float delta) {
-        renderOptionsScreen();
-        renderButtons();
-        stage.act(delta);
-        stage.draw();
-    }
-
-    @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {
         optionsScreenTexture.dispose();
         stage.dispose();
+        skin.dispose();
     }
+
+    // Implement other InputProcessor methods (keyUp, keyDown, etc.) as needed
 }
