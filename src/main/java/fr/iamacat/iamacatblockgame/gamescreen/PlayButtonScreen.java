@@ -15,11 +15,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
+import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
     private final SpriteBatch batch;
     private final Texture optionsScreenTexture;
     private final TextButton backButton;
+    private TextButton createWorldButton;
     private boolean vsyncEnabled;
     private final OrthographicCamera camera;
     private Stage stage;
@@ -33,6 +36,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
     public PlayButtonScreen(SpriteBatch batch) {
         this.batch = batch;
         optionsScreenTexture = new Texture("textures/playbuttonscreen/playbuttonbackground.png");
+
         float windowWidth = Gdx.graphics.getWidth();
         float windowHeight = Gdx.graphics.getHeight();
         float aspectRatio = windowWidth / windowHeight;
@@ -41,6 +45,22 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         backButton = new TextButton("Back", skin);
         backButton.setSize(100, 50);
         backButton.setPosition(100, 100);
+        createWorldButton = new TextButton("Create a new world", skin);
+        createWorldButton.setSize(200, 50);
+        createWorldButton.setPosition(100, 200);
+        createWorldButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Create world button clicked");
+
+                // Call WorldGenerator to generate the world
+                WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
+                Chunk[][] chunks = worldGenerator.generateChunks();
+
+                // Do something with the generated world
+                // ...
+            }
+        });
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -53,6 +73,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         stage = new Stage();
 
         stage.addActor(backButton);
+        stage.addActor(createWorldButton);
     }
 
     public void render(float delta) {
