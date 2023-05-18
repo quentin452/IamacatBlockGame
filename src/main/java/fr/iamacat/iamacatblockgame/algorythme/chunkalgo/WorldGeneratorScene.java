@@ -82,7 +82,6 @@ public class WorldGeneratorScene implements Screen {
         cameraController = new CameraInputController(camera);
         Gdx.input.setInputProcessor(cameraController);
     }
-
     @Override
     public void show() {
 

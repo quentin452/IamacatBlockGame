@@ -22,4 +22,7 @@ public class Block {
     public void render(SpriteBatch batch) {
         // Render the block using the provided SpriteBatch
     }
+    public void dispose() {
+        // Clean up resources, listeners, etc.
+    }
 }

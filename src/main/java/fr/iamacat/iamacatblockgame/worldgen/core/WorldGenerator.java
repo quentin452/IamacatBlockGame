@@ -21,7 +21,7 @@ public class WorldGenerator {
         this.chunkLength = chunkLength;
     }
 
-    public Chunk[][] generateChunks() {
+   public Chunk[][] generateChunks() {
         float[][] heightMap = generateHeightMap();
 
         int numChunksX = worldWidth / chunkWidth;

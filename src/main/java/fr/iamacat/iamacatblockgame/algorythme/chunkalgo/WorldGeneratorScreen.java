@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 
 public class WorldGeneratorScreen implements Screen {
+
     private SpriteBatch batch;
     private WorldGeneratorScene worldGeneratorScene;
 

@@ -4,8 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.utils.async.AsyncTask;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class Chunk {
     public int getWidth() {
@@ -19,14 +20,13 @@ public class Chunk {
     public int getLength() {
         return length;
     }
-    private int width;
-    private int height;
-    private int length;
-
+    public int width;
+    public int height;
+    public int length;
     private Block[][][] blocks;
-
     private OrthographicCamera cam;
     private Frustum frustum;
+    private Map<Float, Block> singletons;
 
     public Chunk(int width, int height, int length) {
         this.width = width;
@@ -35,16 +35,26 @@ public class Chunk {
 
         // Initialize the blocks array with the desired dimensions
         blocks = new Block[width][height][length];
+        singletons = new HashMap<>();
 
         // Populate the blocks array with valid Block objects
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < length; z++) {
                     // Create and assign a new Block object to the blocks array
-                    blocks[x][y][z] = new Block(height);
+                    blocks[x][y][z] = getOrCreateBlock(height);
                 }
             }
         }
+    }
+
+    private Block getOrCreateBlock(float height) {
+        Block block = singletons.get(height);
+        if (block == null) {
+            block = new Block(height);
+            singletons.put(height, block);
+        }
+        return block;
     }
 
     public float getBlockHeight(int x, int y, int z) {
@@ -73,13 +83,13 @@ public class Chunk {
     }
 
     public void setBlockHeight(int x, int y, int z, float height) {
-        blocks[x][y][z].setHeight(height);
+        blocks[x][y][z] = getOrCreateBlock(height);
     }
-
 
     private void updateUI() {
         // Update UI if needed
     }
+
     private boolean isValidBlockCoordinate(int x, int y, int z) {
         return x >= 0 && x < width && y >= 0 && y < height && z >= 0 && z < length;
     }
@@ -99,5 +109,9 @@ public class Chunk {
             }
             batch.end();
         }
+    }
+
+    public void dispose() {
+        // No need to dispose of singleton blocks
     }
 }
