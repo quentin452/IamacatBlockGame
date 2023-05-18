@@ -9,6 +9,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Chunk {
+    private int width;
+    private int height;
+    private int length;
+    private Map<BlockPosition, Block> blocks;
+    private OrthographicCamera cam;
+    private Frustum frustum;
+    private Map<Float, Block> singletons;
+
+    public Chunk(int width, int height, int length) {
+        this.width = width;
+        this.height = height;
+        this.length = length;
+
+        blocks = new HashMap<>();
+        singletons = new HashMap<>();
+    }
+
     public int getWidth() {
         return width;
     }
@@ -20,46 +37,10 @@ public class Chunk {
     public int getLength() {
         return length;
     }
-    public int width;
-    public int height;
-    public int length;
-    private Block[][][] blocks;
-    private OrthographicCamera cam;
-    private Frustum frustum;
-    private Map<Float, Block> singletons;
-
-    public Chunk(int width, int height, int length) {
-        this.width = width;
-        this.height = height;
-        this.length = length;
-
-        // Initialize the blocks array with the desired dimensions
-        blocks = new Block[width][height][length];
-        singletons = new HashMap<>();
-
-        // Populate the blocks array with valid Block objects
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                for (int z = 0; z < length; z++) {
-                    // Create and assign a new Block object to the blocks array
-                    blocks[x][y][z] = getOrCreateBlock(height);
-                }
-            }
-        }
-    }
-
-    private Block getOrCreateBlock(float height) {
-        Block block = singletons.get(height);
-        if (block == null) {
-            block = new Block(height);
-            singletons.put(height, block);
-        }
-        return block;
-    }
 
     public float getBlockHeight(int x, int y, int z) {
-        Block block = blocks[x][y][z];
-        return block.getHeight();
+        Block block = blocks.get(new BlockPosition(x, y, z));
+        return block != null ? block.getHeight() : 0.0f;
     }
 
     public void generate() {
@@ -83,7 +64,24 @@ public class Chunk {
     }
 
     public void setBlockHeight(int x, int y, int z, float height) {
-        blocks[x][y][z] = getOrCreateBlock(height);
+        BlockPosition position = new BlockPosition(x, y, z);
+        Block block = blocks.get(position);
+
+        if (block != null) {
+            block.setHeight(height);
+        } else {
+            block = getOrCreateBlock(height);
+            blocks.put(position, block);
+        }
+    }
+
+    private Block getOrCreateBlock(float height) {
+        Block block = singletons.get(height);
+        if (block == null) {
+            block = new Block(height);
+            singletons.put(height, block);
+        }
+        return block;
     }
 
     private void updateUI() {
@@ -98,20 +96,61 @@ public class Chunk {
         if (frustum.boundsInFrustum(cam.position.x, cam.position.y, 0,
                 cam.viewportWidth, cam.viewportHeight, 0)) {
             batch.begin();
-            for (int z = 0; z < length; z++) {
-                for (int y = 0; y < height; y++) {
-                    for (int x = 0; x < width; x++) {
-                        Block block = blocks[x][y][z];
-                        // Replace 'render' with the correct method for rendering your blocks
-                        block.render(batch);
-                    }
-                }
+            for (Map.Entry<BlockPosition, Block> entry : blocks.entrySet()) {
+                Block block = entry.getValue();
+                // Replace 'render' with the correct method for rendering your blocks
+                block.render(batch);
             }
             batch.end();
         }
     }
 
     public void dispose() {
-        // No need to dispose of singleton blocks
+        // Dispose of singleton blocks
+        for (Block block : singletons.values()) {
+            block.dispose();
+        }
+        singletons.clear();
+        blocks.clear();
+    }
+
+    private static class BlockPosition {
+        private int x;
+        private int y;
+        private int z;
+
+        public BlockPosition(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + x;
+            result = prime * result + y;
+            result = prime * result + z;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            BlockPosition other = (BlockPosition) obj;
+            if (x != other.x)
+                return false;
+            if (y != other.y)
+                return false;
+            if (z != other.z)
+                return false;
+            return true;
+        }
     }
 }
