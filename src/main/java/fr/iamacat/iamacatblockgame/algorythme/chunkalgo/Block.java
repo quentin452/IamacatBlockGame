@@ -11,7 +11,7 @@ public class Block {
     public Block(float height) {
         this.height = height;
         // Load the texture or any other resources needed
-        texture = new Texture("block_texture.png");
+        texture = new Texture("textures/blocks/block_texture.png");
     }
 
     public float getHeight() {

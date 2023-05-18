@@ -34,7 +34,7 @@ jar {
     duplicatesStrategy = 'exclude'
     manifest {
         attributes 'Main-Class': 'fr.iamacat.iamacatblockgame.Main',
-                'JVM-Args': '-Xmx4096m -Xms512m -XX:+UseG1GC -Dsun.awt.noerasebackground=true -Djava.library.path=native'
+                'JVM-Args': '-Xmx4096m -Xms512m -XX:+UseG1GC -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=16M -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -XX:+UseFastAccessorMethods -Djava.library.path=native'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }

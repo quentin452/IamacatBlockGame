@@ -16,6 +16,8 @@ import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 public class Main extends Game {
     private WorldGenerator worldGenerator;
     private Chunk[][] chunks; // Store the generated chunks
+    private SpriteBatch batch;
+    private TitleScreen titleScreen;
 
     public static void main(String[] args) {
         // Configure Log4j
@@ -29,8 +31,6 @@ public class Main extends Game {
 
         new LwjglApplication(new Main(), config);
     }
-    private SpriteBatch batch;
-    private TitleScreen titleScreen;
 
     @Override
     public void create() {
@@ -46,6 +46,7 @@ public class Main extends Game {
         chunks = generateChunksFromBlocks(blocks);
 
     }
+
     private Chunk[][] generateChunksFromBlocks(Block[][][] blocks) {
         int numChunksX = blocks.length / worldGenerator.chunkWidth;
         int numChunksY = blocks[0].length / worldGenerator.chunkHeight;
@@ -75,14 +76,18 @@ public class Main extends Game {
 
     @Override
     public void render() {
+        clearScreen();
+        super.render();
+    }
+
+    private void clearScreen() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-
-        super.render();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
+        // Dispose textures and other disposable objects
     }
 }

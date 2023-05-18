@@ -22,10 +22,14 @@ import com.badlogic.gdx.math.Vector3;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 import com.badlogic.gdx.utils.Array;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorldGeneratorScene implements Screen {
+    private static final Logger logger = LogManager.getLogger(WorldGeneratorScene.class);
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
     private ModelInstance instance;
@@ -43,7 +47,7 @@ public class WorldGeneratorScene implements Screen {
     }
 
     public void create() {
-        System.out.println("Creating WorldGeneratorScene...");
+        logger.debug("Creating WorldGeneratorScene...");
 
         modelBatch = new ModelBatch();
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -117,6 +121,7 @@ public class WorldGeneratorScene implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             exit();
+            logger.info("Exit key pressed");
         }
     }
 
@@ -142,6 +147,7 @@ public class WorldGeneratorScene implements Screen {
 
     public void dispose() {
         modelBatch.dispose();
+        logger.debug("Disposed modelBatch");
     }
 
     public void render() {

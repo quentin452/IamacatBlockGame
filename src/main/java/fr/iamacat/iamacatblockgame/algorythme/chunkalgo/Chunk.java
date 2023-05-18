@@ -12,7 +12,7 @@ public class Chunk {
     private int width;
     private int height;
     private int length;
-    private Map<BlockPosition, Block> blocks;
+    private Block[] blocks;
     private OrthographicCamera cam;
     private Frustum frustum;
 
@@ -20,7 +20,19 @@ public class Chunk {
         this.width = width;
         this.height = height;
         this.length = length;
-        blocks = new HashMap<>();
+        blocks = new Block[width * height * length];
+
+        // Initialize the blocks using chunkBlocks parameter
+        int index = 0;
+        for (int z = 0; z < length; z++) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    Block block = chunkBlocks[x][y];
+                    blocks[index] = block;
+                    index++;
+                }
+            }
+        }
     }
 
     public int getWidth() {
@@ -36,39 +48,25 @@ public class Chunk {
     }
 
     public float getBlockHeight(int x, int y, int z) {
-        Block block = blocks.get(new BlockPosition(x, y, z));
+        int index = getIndex(x, y, z);
+        Block block = blocks[index];
         return block != null ? block.getHeight() : 0.0f;
     }
 
     public void generate() {
-        // Generate on background thread
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Generate terrain here
-
-                // Call updateUI on the UI thread after generation is complete
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateUI();
-                    }
-                });
-            }
-        });
-
-        thread.start();
+        // Generate terrain here
+        updateUI();
     }
 
     public void setBlockHeight(int x, int y, int z, float height) {
-        BlockPosition position = new BlockPosition(x, y, z);
-        Block block = blocks.get(position);
+        int index = getIndex(x, y, z);
+        Block block = blocks[index];
 
         if (block != null) {
             block.setHeight(height);
         } else {
             block = new Block(height);
-            blocks.put(position, block);
+            blocks[index] = block;
         }
     }
 
@@ -84,9 +82,11 @@ public class Chunk {
         if (frustum.boundsInFrustum(cam.position.x, cam.position.y, 0,
                 cam.viewportWidth, cam.viewportHeight, 0)) {
             batch.begin();
-            for (Block block : blocks.values()) {
-                // Replace 'render' with the correct method for rendering your blocks
-                block.render(batch);
+            for (Block block : blocks) {
+                if (block != null) {
+                    // Replace 'render' with the correct method for rendering your blocks
+                    block.render(batch);
+                }
             }
             batch.end();
         }
@@ -94,49 +94,15 @@ public class Chunk {
 
     public void dispose() {
         // Dispose of blocks and associated resources
-        for (Block block : blocks.values()) {
-            block.dispose();
+        for (Block block : blocks) {
+            if (block != null) {
+                block.dispose();
+            }
         }
-        blocks.clear();
+        blocks = null;
     }
 
-    private static class BlockPosition {
-        private int x;
-        private int y;
-        private int z;
-
-        public BlockPosition(int x, int y, int z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + x;
-            result = prime * result + y;
-            result = prime * result + z;
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            BlockPosition other = (BlockPosition) obj;
-            if (x != other.x)
-                return false;
-            if (y != other.y)
-                return false;
-            if (z != other.z)
-                return false;
-            return true;
-        }
+    private int getIndex(int x, int y, int z) {
+        return x + y * width + z * width * height;
     }
 }

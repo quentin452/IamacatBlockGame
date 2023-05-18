@@ -5,14 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c44d325-e720-4c24-af5c-a542c8a3d5cf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/textures/blocks/block_texture.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/IamacatBlockGame.main.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Block.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Chunk.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/WorldGeneratorScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/WorldGeneratorScene.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +42,17 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="IamacatBlockGame" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="IamacatBlockGame" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="IamacatBlockGame" type="f1a62948:ProjectNode" />
                 <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
@@ -63,7 +76,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2Pnib1dP8YAzERvvvBJTYDW7akN" />
   <component name="ProjectLevelVcsManager">
@@ -85,7 +98,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.37290168&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;discord-application&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -97,11 +110,11 @@
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures\gamescreen\button" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures\blocks" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\assets\font\uis\skins\notused" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\assets\font\uis\skins" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\assets\font\english" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\assets" />
-      <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Main">
