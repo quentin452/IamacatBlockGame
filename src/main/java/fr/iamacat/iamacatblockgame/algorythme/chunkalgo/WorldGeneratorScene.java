@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
@@ -20,7 +21,6 @@ import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 public class WorldGeneratorScene implements Screen {
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
-    private Model model;
     private ModelInstance instance;
     private Environment environment;
     private CameraInputController cameraController;
@@ -55,17 +55,16 @@ public class WorldGeneratorScene implements Screen {
         for (int chunkX = 0; chunkX < chunks.length; chunkX++) {
             for (int chunkY = 0; chunkY < chunks[chunkX].length; chunkY++) {
                 Chunk chunk = chunks[chunkX][chunkY];
+                MeshPartBuilder partBuilder = modelBuilder.part("chunk_" + chunkX + "_" + chunkY,
+                        GL20.GL_TRIANGLES,
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal,
+                        new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f)));
+
                 for (int x = 0; x < chunk.getWidth(); x++) {
                     for (int y = 0; y < chunk.getHeight(); y++) {
                         for (int z = 0; z < chunk.getLength(); z++) {
                             float blockHeight = chunk.getBlockHeight(x, y, z);
-                            // Create a cube model using the modelBuilder
-                            modelBuilder.part("box_" + x + "_" + y + "_" + z, GL20.GL_TRIANGLES,
-                                            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal,
-                                            new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f)))
-                                    .box(1f, 1f, 1f);
-                            modelBuilder.node().id = "box_" + x + "_" + y + "_" + z;
-                            modelBuilder.node().translation.set(x, blockHeight, y);
+                            partBuilder.box(x, blockHeight, y, 1f, 1f, 1f);
                         }
                     }
                 }
@@ -82,6 +81,7 @@ public class WorldGeneratorScene implements Screen {
         cameraController = new CameraInputController(camera);
         Gdx.input.setInputProcessor(cameraController);
     }
+
     @Override
     public void show() {
 
@@ -124,7 +124,7 @@ public class WorldGeneratorScene implements Screen {
 
     public void dispose() {
         modelBatch.dispose();
-        model.dispose();
+        instance.model.dispose(); // Dispose the model used by the instance
     }
 
     public void render() {

@@ -1,7 +1,9 @@
 package fr.iamacat.iamacatblockgame.worldgen.core;
 
+import com.badlogic.gdx.math.MathUtils;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,8 +23,8 @@ public class WorldGenerator {
         this.chunkLength = chunkLength;
     }
 
-   public Chunk[][] generateChunks() {
-        float[][] heightMap = generateHeightMap();
+    public Chunk[][] generateChunks() {
+        ByteBuffer heightMapBuffer = generateHeightMap();
 
         int numChunksX = worldWidth / chunkWidth;
         int numChunksY = worldHeight / chunkHeight;
@@ -31,52 +33,59 @@ public class WorldGenerator {
 
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
-            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
-                int startX = chunkX * chunkWidth;
-                int startY = chunkY * chunkHeight;
-                int endX = startX + chunkWidth;
-                int endY = startY + chunkHeight;
-
-                final Chunk chunk = new Chunk(chunkWidth, chunkHeight, chunkLength);
-
-                // Submit chunk generation task to the executor
-                executor.submit(() -> {
-                    for (int x = startX; x < endX; x++) {
-                        for (int y = startY; y < endY; y++) {
-                            // Calculate terrain height for the chunk using heightMap
-                            float height = heightMap[x][y];
-                            // Assign the height to the corresponding block in the chunk
-                            chunk.setBlockHeight(x - startX, y - startY, 0, height);
-                        }
-                    }
-
-                    // Generate the chunk's terrain
-                    chunk.generate();
-                });
-
-                chunks[chunkX][chunkY] = chunk;
-            }
-        }
-
-        executor.shutdown();
-
         try {
-            // Wait for all tasks to complete
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
+                for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
+                    int startX = chunkX * chunkWidth;
+                    int startY = chunkY * chunkHeight;
+                    int endX = startX + chunkWidth;
+                    int endY = startY + chunkHeight;
+
+                    final Chunk chunk = new Chunk(chunkWidth, chunkHeight, chunkLength);
+
+                    executor.submit(() -> {
+                        for (int x = startX; x < endX; x++) {
+                            for (int y = startY; y < endY; y++) {
+                                int heightMapIndex = y * worldWidth + x;
+                                float height = heightMapBuffer.getFloat(heightMapIndex * 4); // 4 bytes per float
+                                chunk.setBlockHeight(x - startX, y - startY, 0, height);
+                            }
+                        }
+
+                        chunk.generate();
+                    });
+
+                    chunks[chunkX][chunkY] = chunk;
+                }
+            }
+        } finally {
+            executor.shutdown();
+
+            try {
+                // Wait for all tasks to complete
+                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         return chunks;
     }
 
-    private float[][] generateHeightMap() {
-        // Create and populate the height map
-        float[][] heightMap = new float[worldWidth][worldHeight];
-        // Generate the height values for each coordinate in the height map
-        // ...
+    private ByteBuffer generateHeightMap() {
+        int bufferSize = worldWidth * worldHeight * 4; // 4 bytes per float
+        ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
 
-        return heightMap;
+        for (int x = 0; x < worldWidth; x++) {
+            for (int y = 0; y < worldHeight; y++) {
+                // Generate a random height value between 0 and 1
+                float height = MathUtils.random();
+                buffer.putFloat(height);
+            }
+        }
+
+        buffer.flip(); // Prepare the buffer for reading
+
+        return buffer;
     }
 }
