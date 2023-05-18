@@ -7,15 +7,17 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 
 public class Main extends Game {
     private WorldGenerator worldGenerator;
+    private Chunk[][] chunks; // Store the generated chunks
     private float[][] heightMap;
+
     public static void main(String[] args) {
-        Log4jConfiguration.configure();
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "IamAcat Block Game";
         config.width = 1280;
@@ -24,21 +26,21 @@ public class Main extends Game {
 
         new LwjglApplication(new Main(), config);
     }
+
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 
     @Override
     public void create() {
-        // Initialize the world generator with the desired world size
-        int worldWidth = 100;
-        int worldHeight = 100;
-        worldGenerator = new WorldGenerator(worldWidth, worldHeight);
-
-        // Generate the height map
-        heightMap = worldGenerator.generateHeightMap();
         batch = new SpriteBatch();
         titleScreen = new TitleScreen(batch);
         setScreen(titleScreen);
+
+        // Create an instance of WorldGenerator
+        worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
+
+        // Generate the chunks
+        chunks = worldGenerator.generateChunks();
     }
 
     @Override
