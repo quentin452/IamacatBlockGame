@@ -8,12 +8,21 @@ import com.badlogic.gdx.utils.async.AsyncTask;
 
 
 public class Chunk {
+    public int getWidth() {
+        return width;
+    }
 
-    private final int width;
-    private final int height;
-    private final int length;
+    public int getHeight() {
+        return height;
+    }
 
-    // Use your own Block class instead of 'Block' from com.jcraft.jorbis
+    public int getLength() {
+        return length;
+    }
+    private int width;
+    private int height;
+    private int length;
+
     private Block[][][] blocks;
 
     private OrthographicCamera cam;
@@ -23,7 +32,24 @@ public class Chunk {
         this.width = width;
         this.height = height;
         this.length = length;
+
+        // Initialize the blocks array with the desired dimensions
         blocks = new Block[width][height][length];
+
+        // Populate the blocks array with valid Block objects
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                for (int z = 0; z < length; z++) {
+                    // Create and assign a new Block object to the blocks array
+                    blocks[x][y][z] = new Block(height);
+                }
+            }
+        }
+    }
+
+    public float getBlockHeight(int x, int y, int z) {
+        Block block = blocks[x][y][z];
+        return block.getHeight();
     }
 
     public void generate() {
@@ -53,6 +79,9 @@ public class Chunk {
 
     private void updateUI() {
         // Update UI if needed
+    }
+    private boolean isValidBlockCoordinate(int x, int y, int z) {
+        return x >= 0 && x < width && y >= 0 && y < height && z >= 0 && z < length;
     }
 
     public void render(SpriteBatch batch) {

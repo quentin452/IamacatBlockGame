@@ -18,6 +18,9 @@ public class Main extends Game {
     private float[][] heightMap;
 
     public static void main(String[] args) {
+        // Configure Log4j
+        Log4jConfiguration.configure();
+
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "IamAcat Block Game";
         config.width = 1280;
@@ -26,7 +29,6 @@ public class Main extends Game {
 
         new LwjglApplication(new Main(), config);
     }
-
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 

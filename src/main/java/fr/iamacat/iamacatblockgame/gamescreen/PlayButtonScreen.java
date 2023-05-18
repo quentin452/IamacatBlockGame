@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.WorldGeneratorScene;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
@@ -53,14 +54,15 @@ public class PlayButtonScreen implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Create world button clicked");
 
-                // Call WorldGenerator to generate the world
-                WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
-                Chunk[][] chunks = worldGenerator.generateChunks();
+                // Call WorldGeneratorScene to generate and render the world
+                WorldGeneratorScene worldGeneratorScene = new WorldGeneratorScene();
+                worldGeneratorScene.create();  // Initialize the scene
 
-                // Do something with the generated world
-                // ...
+                // Set the game's screen to the worldGeneratorScene
+                ((Game) Gdx.app.getApplicationListener()).setScreen(worldGeneratorScene);
             }
         });
+
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -73,7 +75,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         stage = new Stage();
 
         stage.addActor(backButton);
-        stage.addActor(createWorldButton);
+        stage.addActor(createWorldButton); // Add createWorldButton to the stage
     }
 
     public void render(float delta) {
@@ -83,6 +85,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         stage.draw();
         Gdx.graphics.requestRendering(); // Request a new frame to be rendered
     }
+
     private void update(float delta) {
     }
 
@@ -91,7 +94,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(optionsScreenTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(optionsScreenTexture, 0, 0);
         batch.end();
     }
 
