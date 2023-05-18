@@ -12,11 +12,18 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
+
+import com.badlogic.gdx.utils.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorldGeneratorScene implements Screen {
     private PerspectiveCamera camera;
@@ -47,36 +54,47 @@ public class WorldGeneratorScene implements Screen {
         camera.update();
 
         worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
-        Chunk[][] chunks = worldGenerator.generateChunks();
+        Block[][][] blocks = worldGenerator.generateBlocks();
 
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
+        List<ModelInstance> instances = new ArrayList<>();
 
-        for (int chunkX = 0; chunkX < chunks.length; chunkX++) {
-            for (int chunkY = 0; chunkY < chunks[chunkX].length; chunkY++) {
-                Chunk chunk = chunks[chunkX][chunkY];
-                MeshPartBuilder partBuilder = modelBuilder.part("chunk_" + chunkX + "_" + chunkY,
-                        GL20.GL_TRIANGLES,
-                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal,
-                        new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f)));
+        for (int x = 0; x < blocks.length; x++) {
+            for (int y = 0; y < blocks[x].length; y++) {
+                for (int z = 0; z < blocks[x][y].length; z++) {
+                    Block block = blocks[x][y][z];
 
-                for (int x = 0; x < chunk.getWidth(); x++) {
-                    for (int y = 0; y < chunk.getHeight(); y++) {
-                        for (int z = 0; z < chunk.getLength(); z++) {
-                            float blockHeight = chunk.getBlockHeight(x, y, z);
-                            partBuilder.box(x, blockHeight, y, 1f, 1f, 1f);
-                        }
+                    if (block != null) {
+                        ModelBuilder modelBuilder = new ModelBuilder();
+                        modelBuilder.begin();
+                        modelBuilder.node().id = "block_" + x + "_" + y + "_" + z;
+                        modelBuilder.part("part1", GL20.GL_TRIANGLES,
+                                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal,
+                                        new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f)))
+                                .box(1f, 1f, 1f);
+                        Model blockModel = modelBuilder.end();
+                        ModelInstance blockInstance = new ModelInstance(blockModel, new Vector3(x, y, z));
+                        instances.add(blockInstance);
                     }
                 }
             }
         }
 
-        Model blockModel = modelBuilder.end(); // End the modelBuilder and retrieve the model
-        System.out.println("ModelBuilder ended.");
+        instance = new ModelInstance(new Model()); // Create an empty ModelInstance
 
-        instance = new ModelInstance(blockModel); // Create a new ModelInstance using the model
+        Node parentNode = new Node();
+        for (ModelInstance modelInstance : instances) {
+            Node node = new Node();
+            node.translation.set(modelInstance.transform.getTranslation(Vector3.Zero));
+            node.rotation.set(modelInstance.transform.getRotation(new Quaternion()));
+            node.scale.set(modelInstance.transform.getScale(new Vector3(1f, 1f, 1f)));
+            node.parts.addAll(modelInstance.model.nodes.get(0).parts);
+            parentNode.addChild(node);
+        }
+        instance.nodes.add(parentNode);
+
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         cameraController = new CameraInputController(camera);
         Gdx.input.setInputProcessor(cameraController);
@@ -124,7 +142,6 @@ public class WorldGeneratorScene implements Screen {
 
     public void dispose() {
         modelBatch.dispose();
-        instance.model.dispose(); // Dispose the model used by the instance
     }
 
     public void render() {

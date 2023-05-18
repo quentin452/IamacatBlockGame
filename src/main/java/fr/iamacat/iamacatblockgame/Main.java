@@ -7,6 +7,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
@@ -41,7 +42,35 @@ public class Main extends Game {
         worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
 
         // Generate the chunks
-        chunks = worldGenerator.generateChunks();
+        Block[][][] blocks = worldGenerator.generateBlocks();
+        chunks = generateChunksFromBlocks(blocks);
+
+    }
+    private Chunk[][] generateChunksFromBlocks(Block[][][] blocks) {
+        int numChunksX = blocks.length / worldGenerator.chunkWidth;
+        int numChunksY = blocks[0].length / worldGenerator.chunkHeight;
+
+        Chunk[][] chunks = new Chunk[numChunksX][numChunksY];
+
+        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
+            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
+                int startX = chunkX * worldGenerator.chunkWidth;
+                int startY = chunkY * worldGenerator.chunkHeight;
+                int endX = startX + worldGenerator.chunkWidth;
+                int endY = startY + worldGenerator.chunkHeight;
+
+                Block[][] chunkBlocks = new Block[worldGenerator.chunkWidth][worldGenerator.chunkHeight];
+                for (int x = startX; x < endX; x++) {
+                    for (int y = startY; y < endY; y++) {
+                        chunkBlocks[x - startX][y - startY] = blocks[x][y][0]; // Assuming chunkLength is 1
+                    }
+                }
+
+                chunks[chunkX][chunkY] = new Chunk(worldGenerator.chunkWidth, worldGenerator.chunkHeight, 1, chunkBlocks);
+            }
+        }
+
+        return chunks;
     }
 
     @Override

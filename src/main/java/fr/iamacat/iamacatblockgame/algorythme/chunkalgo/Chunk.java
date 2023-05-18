@@ -15,15 +15,12 @@ public class Chunk {
     private Map<BlockPosition, Block> blocks;
     private OrthographicCamera cam;
     private Frustum frustum;
-    private Map<Float, Block> singletons;
 
-    public Chunk(int width, int height, int length) {
+    public Chunk(int width, int height, int length, Block[][] chunkBlocks) {
         this.width = width;
         this.height = height;
         this.length = length;
-
         blocks = new HashMap<>();
-        singletons = new HashMap<>();
     }
 
     public int getWidth() {
@@ -70,18 +67,9 @@ public class Chunk {
         if (block != null) {
             block.setHeight(height);
         } else {
-            block = getOrCreateBlock(height);
+            block = new Block(height);
             blocks.put(position, block);
         }
-    }
-
-    private Block getOrCreateBlock(float height) {
-        Block block = singletons.get(height);
-        if (block == null) {
-            block = new Block(height);
-            singletons.put(height, block);
-        }
-        return block;
     }
 
     private void updateUI() {
@@ -96,8 +84,7 @@ public class Chunk {
         if (frustum.boundsInFrustum(cam.position.x, cam.position.y, 0,
                 cam.viewportWidth, cam.viewportHeight, 0)) {
             batch.begin();
-            for (Map.Entry<BlockPosition, Block> entry : blocks.entrySet()) {
-                Block block = entry.getValue();
+            for (Block block : blocks.values()) {
                 // Replace 'render' with the correct method for rendering your blocks
                 block.render(batch);
             }
@@ -106,11 +93,10 @@ public class Chunk {
     }
 
     public void dispose() {
-        // Dispose of singleton blocks
-        for (Block block : singletons.values()) {
+        // Dispose of blocks and associated resources
+        for (Block block : blocks.values()) {
             block.dispose();
         }
-        singletons.clear();
         blocks.clear();
     }
 

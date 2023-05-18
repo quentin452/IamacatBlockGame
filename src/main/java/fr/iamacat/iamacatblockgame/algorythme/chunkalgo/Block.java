@@ -6,23 +6,29 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Block {
     private float height;
+    private Texture texture;
 
     public Block(float height) {
         this.height = height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
+        // Load the texture or any other resources needed
+        texture = new Texture("block_texture.png");
     }
 
     public float getHeight() {
         return height;
     }
 
-    public void render(SpriteBatch batch) {
-        // Render the block using the provided SpriteBatch
+    public void setHeight(float height) {
+        this.height = height;
     }
+
+    public void render(SpriteBatch batch) {
+        // Render the block using the texture and appropriate logic
+        batch.draw(texture, 0, 0);
+    }
+
     public void dispose() {
-        // Clean up resources, listeners, etc.
+        // Dispose of any resources associated with the block
+        texture.dispose();
     }
 }
