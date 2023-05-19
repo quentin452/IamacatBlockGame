@@ -13,7 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.WorldGeneratorScene;
+import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
     private final SpriteBatch batch;
@@ -49,6 +52,15 @@ public class PlayButtonScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Create world button clicked");
+
+                // Create an instance of WorldGenerator
+                WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
+
+                // Generate the blocks
+                Block[][][] blocks = worldGenerator.generateBlocks();
+
+                // Generate the chunks
+                Chunk[][] chunks = worldGenerator.generateChunks(blocks);
 
                 // Call WorldGeneratorScene to generate and render the world
                 WorldGeneratorScene worldGeneratorScene = new WorldGeneratorScene();

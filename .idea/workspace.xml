@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c44d325-e720-4c24-af5c-a542c8a3d5cf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/textures/blocks/block_texture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Block.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Chunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/WorldGeneratorScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/WorldGeneratorScene.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

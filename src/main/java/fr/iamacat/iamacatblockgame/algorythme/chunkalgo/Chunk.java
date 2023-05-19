@@ -13,6 +13,7 @@ public class Chunk {
     private Frustum frustum;
 
     public Chunk(int width, int height, int length, Block[][] chunkBlocks) {
+        System.out.println("Chunk constructor called");
         this.width = width;
         this.height = height;
         this.length = length;
@@ -50,6 +51,7 @@ public class Chunk {
     }
 
     public void generate() {
+        System.out.println("Chunk generate method called");
         // Generate terrain here
         updateUI();
     }
@@ -75,6 +77,7 @@ public class Chunk {
     }
 
     public void render(SpriteBatch batch) {
+        System.out.println("Rendering Chunks...");
         if (frustum.boundsInFrustum(cam.position.x, cam.position.y, 0,
                 cam.viewportWidth, cam.viewportHeight, 0)) {
             batch.begin();

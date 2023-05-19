@@ -2,6 +2,7 @@ package fr.iamacat.iamacatblockgame.worldgen.core;
 
 import com.badlogic.gdx.math.MathUtils;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +31,6 @@ public class WorldGenerator {
         int numChunksY = worldHeight / chunkHeight;
 
         Block[][][] blocks = new Block[numChunksX * chunkWidth][numChunksY * chunkHeight][chunkLength];
-
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         try {
@@ -67,7 +67,35 @@ public class WorldGenerator {
                 e.printStackTrace();
             }
         }
+
         return blocks;
+    }
+
+    public Chunk[][] generateChunks(Block[][][] blocks) {
+        int numChunksX = blocks.length / chunkWidth;
+        int numChunksY = blocks[0].length / chunkHeight;
+
+        Chunk[][] chunks = new Chunk[numChunksX][numChunksY];
+
+        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
+            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
+                int startX = chunkX * chunkWidth;
+                int startY = chunkY * chunkHeight;
+                int endX = startX + chunkWidth;
+                int endY = startY + chunkHeight;
+
+                Block[][] chunkBlocks = new Block[chunkWidth][chunkHeight];
+                for (int x = startX; x < endX; x++) {
+                    for (int y = startY; y < endY; y++) {
+                        chunkBlocks[x - startX][y - startY] = blocks[x][y][0]; // Assuming chunkLength is 1
+                    }
+                }
+
+                chunks[chunkX][chunkY] = new Chunk(chunkWidth, chunkHeight, 1, chunkBlocks);
+            }
+        }
+
+        return chunks;
     }
 
     private ByteBuffer generateHeightMap() {
