@@ -1,12 +1,8 @@
 package fr.iamacat.iamacatblockgame.algorythme.chunkalgo;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Frustum;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Chunk {
     private int width;

@@ -2,7 +2,6 @@ package fr.iamacat.iamacatblockgame.worldgen.core;
 
 import com.badlogic.gdx.math.MathUtils;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
@@ -68,7 +67,6 @@ public class WorldGenerator {
                 e.printStackTrace();
             }
         }
-
         return blocks;
     }
 

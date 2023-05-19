@@ -9,15 +9,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.WorldGeneratorScene;
-import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
     private final SpriteBatch batch;
