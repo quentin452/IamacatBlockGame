@@ -35,11 +35,6 @@ public class Chunk implements Screen {
         font = new BitmapFont();
         spriteBatch = new SpriteBatch();
     }
-    public void renderBlockCount() {
-        spriteBatch.begin();
-        font.draw(spriteBatch, "Block count: " + blockCount, 10, Gdx.graphics.getHeight() - 10);
-        spriteBatch.end();
-    }
     public ModelInstance getModelInstance() {
         return modelInstance;
     }
@@ -67,7 +62,6 @@ public class Chunk implements Screen {
                         meshPartBuilder.setVertexTransform(new Matrix4().trn(position));
                         meshPartBuilder.addMesh(block.getModel().meshParts.get(0).mesh);
                         incrementBlockCount(); // Increment the block count when a block is generated
-                        renderBlockCount(); // Render the block count on the screen
                     }
                 }
             }
@@ -90,7 +84,6 @@ public class Chunk implements Screen {
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
         spriteBatch.begin();
-        renderBlockCount(); // Render the block count on the screen
         spriteBatch.end();
     }
 
