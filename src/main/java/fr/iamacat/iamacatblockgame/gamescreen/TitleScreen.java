@@ -43,7 +43,6 @@ public class TitleScreen implements Screen, InputProcessor {
     }
 
     public void renderTitleScreen() {
-        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(titleScreenTexture, 0, 0, camera.viewportWidth, camera.viewportHeight);
         batch.end();

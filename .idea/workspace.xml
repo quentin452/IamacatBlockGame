@@ -5,8 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c44d325-e720-4c24-af5c-a542c8a3d5cf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/save.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/multithreadingandbatching/AnimatedTexturesMultithreadedandbatched.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/savesystem/SaveData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/savesystem/SaveSystem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/textures/testworldscreen/playbuttonbackground.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/PlayButtonScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/PlayButtonScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TitleScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TitleScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/scene/game/TestWorldScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/scene/game/TestWorldScene.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,7 +95,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/iamacat/Desktop/IamacatBlockGame&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/iamacat/Desktop/github-intellidea/IamacatBlockGame/src/main/resources/textures&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.37290168&quot;,
@@ -96,11 +105,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures\playbuttonscreen" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\assets\font\uis\skins\notused" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\assets\font\uis\skins" />
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures\gamescreen" />
-      <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures\gamescreen\button" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\iamacat\Desktop\github-intellidea\IamacatBlockGame\src\main\resources\textures\skins" />
@@ -262,5 +271,41 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/savesystem/SaveSystem.java</url>
+          <line>27</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
+          <line>163</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
+          <line>168</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
+          <line>170</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
+          <line>183</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/savesystem/SaveSystem.java</url>
+          <line>24</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -82,7 +82,8 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         createTestWorldButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                testWorldScene = new TestWorldScene();
+                testWorldScene = new TestWorldScene(batch);
+
                 ((Game) Gdx.app.getApplicationListener()).setScreen(testWorldScene);
             }
         });
@@ -90,6 +91,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Back button clicked");
+
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new TitleScreen(batch));
             }
         });

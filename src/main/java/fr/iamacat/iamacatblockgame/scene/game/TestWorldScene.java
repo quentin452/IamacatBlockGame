@@ -1,5 +1,6 @@
 package fr.iamacat.iamacatblockgame.scene.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -7,14 +8,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import fr.iamacat.iamacatblockgame.gamescreen.TestWorldScreen;
 import fr.iamacat.iamacatblockgame.player.Player;
 
 public class TestWorldScene implements Screen {
+    private SpriteBatch batch;
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
     private Environment environment;
@@ -23,9 +27,12 @@ public class TestWorldScene implements Screen {
     private ModelInstance otherObject;
     private Model terrainModel;
     private Model objectModel;
-
+    public TestWorldScene(SpriteBatch batch) {
+        this.batch = batch;
+    }
     @Override
     public void show() {
+
         // Set up the camera with appropriate settings
         float fieldOfView = 60f; // Set the desired field of view angle
         camera = new PerspectiveCamera(fieldOfView, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -170,13 +177,16 @@ public class TestWorldScene implements Screen {
     }
 
     private void handleInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            System.out.println("ESCAPE key pressed");
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new TestWorldScreen(batch));
+        }
         // Handle other input if needed
     }
 
-    // Implement other Screen interface methods as needed
-
     @Override
     public void dispose() {
+
         // Dispose of resources
         modelBatch.dispose();
         player.dispose();
