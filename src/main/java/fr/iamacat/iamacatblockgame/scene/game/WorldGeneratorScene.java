@@ -35,7 +35,7 @@ public class WorldGeneratorScene implements Screen {
 
         for (Chunk[] row : chunks) {
             for (Chunk chunk : row) {
-                chunk.createModelInstance(); // Create the ModelInstance for each chunk
+        //        chunk.createModelInstance(player.getPosition(), (int) viewDistance);
             }
         }
     }

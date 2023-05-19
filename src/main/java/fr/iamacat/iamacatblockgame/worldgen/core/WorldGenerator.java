@@ -41,21 +41,20 @@ public class WorldGenerator {
                     int endX = startX + chunkWidth;
                     int endY = startY + chunkHeight;
 
-                    executor.submit(() -> {
-                        for (int x = startX; x < endX; x++) {
-                            for (int y = startY; y < endY; y++) {
-                                int heightMapIndex = y * worldWidth + x;
-                                float height = heightMapBuffer.getFloat(heightMapIndex * 4); // 4 bytes per float
+                    for (int x = startX; x < endX; x++) {
+                        for (int y = startY; y < endY; y++) {
+                            int heightMapIndex = y * worldWidth + x;
+                            float height = heightMapBuffer.getFloat(heightMapIndex * 4); // 4 bytes per float
 
-                                for (int z = 0; z < chunkLength; z++) {
-                                    if (z < height * chunkLength) {
-                                       // System.out.println("Generating block: " + x + ", " + y + ", " + z);
-                                        blocks[x][y][z] = new Block(height); // Pass the height value to the Block constructor
-                                    }
+                            for (int z = 0; z < chunkLength; z++) {
+                                if (z < height * chunkLength) {
+                                    blocks[x][y][z] = new Block(height); // Pass the height value to the Block constructor
+                                } else {
+                                    blocks[x][y][z] = new Block(0.0f); // Create empty block for remaining layers
                                 }
                             }
                         }
-                    });
+                    }
                 }
             }
         } finally {
@@ -68,6 +67,7 @@ public class WorldGenerator {
                 e.printStackTrace();
             }
         }
+
         return blocks;
     }
 
@@ -87,11 +87,11 @@ public class WorldGenerator {
                 Block[][] chunkBlocks = new Block[chunkWidth][chunkHeight];
                 for (int x = startX; x < endX; x++) {
                     for (int y = startY; y < endY; y++) {
-                        chunkBlocks[x - startX][y - startY] = blocks[x][y][0]; // Assuming chunkLength is 1
+                        chunkBlocks[x - startX][y - startY] = blocks[x][y][0]; // Use the first layer of the block
                     }
                 }
 
-                chunks[chunkX][chunkY] = new Chunk(chunkWidth, chunkHeight, 1, chunkBlocks);
+                chunks[chunkX][chunkY] = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
             }
         }
 
@@ -100,18 +100,16 @@ public class WorldGenerator {
 
     private ByteBuffer generateHeightMap() {
         int bufferSize = worldWidth * worldHeight * 4; // 4 bytes per float
-        ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize);
+        ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
 
         for (int x = 0; x < worldWidth; x++) {
             for (int y = 0; y < worldHeight; y++) {
-                // Generate a random height value between 0 and 1
                 float height = MathUtils.random();
                 buffer.putFloat(height);
             }
         }
 
-        buffer.flip(); // Prepare the buffer for reading
-
+        buffer.flip();
         return buffer;
     }
 }

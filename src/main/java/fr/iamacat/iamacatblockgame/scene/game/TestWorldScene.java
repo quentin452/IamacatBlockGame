@@ -21,6 +21,9 @@ import fr.iamacat.iamacatblockgame.gamescreen.TestWorldScreen;
 import fr.iamacat.iamacatblockgame.player.Player;
 
 public class TestWorldScene implements Screen {
+
+    private float viewDistance = 8f; // Replace 10f with the desired value render distance in chunks
+
     private SpriteBatch batch;
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
@@ -43,7 +46,7 @@ public class TestWorldScene implements Screen {
 
         for (Chunk[] row : chunks) {
             for (Chunk chunk : row) {
-                chunk.createModelInstance(); // Create the ModelInstance for each chunk
+                chunk.createModelInstance(player.getPosition(), (int) viewDistance);
             }
         }
     }
