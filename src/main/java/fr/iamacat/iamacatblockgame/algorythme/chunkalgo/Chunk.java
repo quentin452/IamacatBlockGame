@@ -17,7 +17,9 @@ public class Chunk {
     private int length;
     private Block[][] chunkBlocks;
     private ModelInstance modelInstance;
-
+    public ModelInstance getModelInstance() {
+        return modelInstance;
+    }
     public Chunk(int width, int height, int length, Block[][] chunkBlocks) {
         this.width = width;
         this.height = height;

@@ -29,86 +29,29 @@ public class WorldGeneratorScene implements Screen {
     private static final Logger logger = LogManager.getLogger(WorldGeneratorScene.class);
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
-    private ModelInstance instance;
     private Environment environment;
     private CameraInputController cameraController;
-    private WorldGenerator worldGenerator;
-    private boolean shouldExit = false;
-    private Player player;
     private Chunk[][] chunks;
 
-    public WorldGeneratorScene(Chunk[][] chunks, WorldGenerator worldGenerator) {
+    public WorldGeneratorScene(Chunk[][] chunks) {
         this.chunks = chunks;
-        this.worldGenerator = worldGenerator;
         create();
     }
 
     private void create() {
         initializeCamera();
-
-        Block[][][] blocks = worldGenerator.generateBlocks();
-        List<ModelInstance> instances = createBlockInstances(blocks);
-
-        instance = createModelInstance(instances);
-
+        modelBatch = new ModelBatch();
         environment = createEnvironment();
         cameraController = createCameraController();
-
-        player = new Player();
     }
 
     private void initializeCamera() {
-        modelBatch = new ModelBatch();
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 10f);
         camera.lookAt(0, 0, 0);
         camera.near = 1f;
         camera.far = 300f;
         camera.update();
-    }
-
-    private List<ModelInstance> createBlockInstances(Block[][][] blocks) {
-        List<ModelInstance> instances = new ArrayList<>();
-
-        for (int x = 0; x < blocks.length; x++) {
-            for (int y = 0; y < blocks[x].length; y++) {
-                for (int z = 0; z < blocks[x][y].length; z++) {
-                    Block block = blocks[x][y][z];
-
-                    if (block != null) {
-                        ModelBuilder modelBuilder = new ModelBuilder();
-                        modelBuilder.begin();
-                        modelBuilder.node().id = "block_" + x + "_" + y + "_" + z;
-                        modelBuilder.part("part1", GL20.GL_TRIANGLES,
-                                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal,
-                                        new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f)))
-                                .box(1f, 1f, 1f);
-                        Model blockModel = modelBuilder.end();
-                        ModelInstance blockInstance = new ModelInstance(blockModel, new Vector3(x, y, z));
-                        instances.add(blockInstance);
-                    }
-                }
-            }
-        }
-
-        return instances;
-    }
-
-    private ModelInstance createModelInstance(List<ModelInstance> instances) {
-        ModelInstance modelInstance = new ModelInstance(new Model());
-        Node parentNode = new Node();
-
-        for (ModelInstance instance : instances) {
-            Node node = new Node();
-            node.translation.set(instance.transform.getTranslation(Vector3.Zero));
-            node.rotation.set(instance.transform.getRotation(new Quaternion()));
-            node.scale.set(instance.transform.getScale(new Vector3(1f, 1f, 1f)));
-            node.parts.addAll(instance.model.nodes.get(0).parts);
-            parentNode.addChild(node);
-        }
-
-        modelInstance.nodes.add(parentNode);
-        return modelInstance;
     }
 
     private Environment createEnvironment() {
@@ -136,15 +79,17 @@ public class WorldGeneratorScene implements Screen {
 
         cameraController.update();
         modelBatch.begin(camera);
-        modelBatch.render(instance, environment);
+
+        for (Chunk[] row : chunks) {
+            for (Chunk chunk : row) {
+                modelBatch.render(chunk.getModelInstance(), environment);
+            }
+        }
+
         modelBatch.end();
 
-        player.setPosition(100, 100);
-        camera.position.set(player.getPosition());
-        camera.update();
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            exit();
+            Gdx.app.exit();
         }
     }
 
@@ -166,14 +111,6 @@ public class WorldGeneratorScene implements Screen {
     @Override
     public void hide() {
 
-    }
-
-    public boolean shouldExit() {
-        return shouldExit;
-    }
-
-    private void exit() {
-        shouldExit = true;
     }
 
     @Override
