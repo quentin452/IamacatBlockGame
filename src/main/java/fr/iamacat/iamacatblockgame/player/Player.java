@@ -1,34 +1,38 @@
 package fr.iamacat.iamacatblockgame.player;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 
 public class Player {
     private Vector3 position;
-    private Vector3 size;
-    private Texture skin;
+    private ModelInstance modelInstance;
 
-    public Player() {
-        position = new Vector3();
-        size = new Vector3();
-        skin = new Texture("textures/skins/player_skin.png");
+    public Player(Vector3 position) {
+        this.position = position;
+        ModelBuilder modelBuilder = new ModelBuilder();
+        Model model = modelBuilder.createBox(1f, 1f, 1f,
+                new Material(), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        modelInstance = new ModelInstance(model);
+        modelInstance.transform.setToTranslation(position);
     }
 
-    public void setPosition(float x, float y) {
-        position.set(x, y, 0);  // Set z-coordinate to 0
+    public void setPosition(float x, float y, float z) {
+        position.set(x, y, z);
+        modelInstance.transform.setToTranslation(position);
     }
 
     public Vector3 getPosition() {
         return position;
     }
 
-    public void render(SpriteBatch batch, Camera camera) {
-        float x = position.x - camera.getPosition().x;
-        float y = position.y - camera.getPosition().y;
+    public void render(ModelBatch modelBatch, Environment environment) {
+        modelBatch.render(modelInstance, environment);
+    }
 
-        batch.begin();
-        batch.draw(skin, x, y, size.x, size.y);
-        batch.end();
+    public void dispose() {
+        // Dispose of resources
+        modelInstance.model.dispose();
     }
 }
