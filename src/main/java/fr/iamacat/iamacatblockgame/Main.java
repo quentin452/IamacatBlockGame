@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
 
-
-
 public class Main extends Game {
     private SpriteBatch batch;
     private TitleScreen titleScreen;

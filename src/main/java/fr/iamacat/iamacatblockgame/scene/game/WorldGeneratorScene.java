@@ -1,4 +1,4 @@
-package fr.iamacat.iamacatblockgame.algorythme.chunkalgo;
+package fr.iamacat.iamacatblockgame.scene.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -15,6 +15,9 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
+import fr.iamacat.iamacatblockgame.player.Player;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +34,7 @@ public class WorldGeneratorScene implements Screen {
     private CameraInputController cameraController;
     private WorldGenerator worldGenerator;
     private boolean shouldExit = false;
+    private Player player;
 
     public boolean shouldExit() {
         return shouldExit;
@@ -39,14 +43,18 @@ public class WorldGeneratorScene implements Screen {
     private void exit() {
         shouldExit = true;
     }
-        private Chunk[][] chunks;
 
-        public WorldGeneratorScene(Chunk[][] chunks) {
-            this.chunks = chunks;
-        }
+    private Chunk[][] chunks;
+
+    public WorldGeneratorScene(Chunk[][] chunks, WorldGenerator worldGenerator) {
+        this.chunks = chunks;
+        this.worldGenerator = worldGenerator;
+        System.out.println("Creating WorldGeneratorScene...");
+        create(); // Call the create() method here to initialize the camera and other components
+        System.out.println("WorldGeneratorScene created successfully");
+    }
 
     public void create() {
-        logger.debug("Creating WorldGeneratorScene...");
 
         modelBatch = new ModelBatch();
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -100,6 +108,8 @@ public class WorldGeneratorScene implements Screen {
 
         cameraController = new CameraInputController(camera);
         Gdx.input.setInputProcessor(cameraController);
+
+        player = new Player();
     }
 
     @Override
@@ -117,9 +127,16 @@ public class WorldGeneratorScene implements Screen {
         modelBatch.render(instance, environment);
         modelBatch.end();
 
+        // Update player position (example)
+        player.setPosition(100, 100);
+
+        // Update camera position
+        camera.position.set(player.getPosition());
+        camera.update();
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             exit();
-            logger.info("Exit key pressed");
+            System.out.println("Exit key pressed");
         }
     }
 
@@ -145,9 +162,6 @@ public class WorldGeneratorScene implements Screen {
 
     public void dispose() {
         modelBatch.dispose();
-        logger.debug("Disposed modelBatch");
-    }
-
-    public void render() {
+        System.out.println("Disposed modelBatch");
     }
 }

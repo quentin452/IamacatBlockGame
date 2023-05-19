@@ -15,7 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
-import fr.iamacat.iamacatblockgame.player.GameScreen;
+import fr.iamacat.iamacatblockgame.scene.game.WorldGeneratorScene;
+import fr.iamacat.iamacatblockgame.scene.hud.GameScreen;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
@@ -67,10 +68,10 @@ public class PlayButtonScreen implements Screen, InputProcessor {
                 System.out.println("Chunks generated");
 
                 // Create an instance of GameScreen and pass the generated chunks
-                GameScreen gameScreen = new GameScreen(chunks);
+                WorldGeneratorScene worldgeneratorScene = new WorldGeneratorScene(chunks, worldGenerator);
 
                 // Set the game's screen to the GameScreen
-                ((Game) Gdx.app.getApplicationListener()).setScreen(gameScreen);
+                ((Game) Gdx.app.getApplicationListener()).setScreen(worldgeneratorScene);
             }
         });
 

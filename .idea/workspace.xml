@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4c44d325-e720-4c24-af5c-a542c8a3d5cf" name="Changes" comment="" />
+    <list default="true" id="4c44d325-e720-4c24-af5c-a542c8a3d5cf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Log4jConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Log4jConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/WorldGeneratorScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/scene/game/WorldGeneratorScene.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/PlayButtonScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/PlayButtonScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TitleScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TitleScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/player/GameScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/scene/hud/GameScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/player/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

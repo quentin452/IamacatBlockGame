@@ -47,7 +47,7 @@ public class Log4jConfiguration {
                 .build();
         appender.start();
 
-        logger.info("Log4j configured programmatically with log file: " + logFileName);
+        System.out.println("Log4j configured programmatically with log file: " + logFileName);
     }
 
     public static String getLogFileName() {

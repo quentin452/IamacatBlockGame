@@ -86,7 +86,6 @@ public class TitleScreen implements Screen, InputProcessor {
         if (playButton.isClicked(mouseX, mouseY)) {
             System.out.println("Play button clicked");
             gameStarted = true;
-            System.out.println("Options button clicked");
             PlayButtonScreen playbuttonScreen = new PlayButtonScreen(batch);
             ((Game) Gdx.app.getApplicationListener()).setScreen(playbuttonScreen);
             return true;
