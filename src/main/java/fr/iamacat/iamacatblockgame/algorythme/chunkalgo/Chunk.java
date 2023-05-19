@@ -15,6 +15,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 public class Chunk implements Screen {
+
+    private boolean loaded; // Flag indicating whether the chunk is loaded or not
     private int width;
     private int height;
     private int length;
@@ -22,28 +24,40 @@ public class Chunk implements Screen {
     private ModelInstance modelInstance;
     private BitmapFont font;
     private SpriteBatch spriteBatch;
-
-    private int blockCount; // Counter for the number of generated blocks
+    private boolean modelDirty; // Flag indicating whether the model needs regeneration
+    private Model model; // Cached model for the chunk
 
     public Chunk(int width, int height, int length, int chunkHeight, Block[][] chunkBlocks) {
         this.width = width;
         this.height = height;
         this.length = length;
         this.chunkBlocks = chunkBlocks;
-        this.blockCount = 0; // Initialize the block count to 0
+        this.loaded = false;
+        this.modelDirty = true;
         // Create font and sprite batch for the screen
         font = new BitmapFont();
         spriteBatch = new SpriteBatch();
     }
     public ModelInstance getModelInstance() {
+        if (modelDirty) {
+            Vector3 playerPosition = new Vector3(0, 0, 0);
+            int viewDistance = 10;
+            createModelInstance(playerPosition, viewDistance);
+
+        }
         return modelInstance;
     }
 
     public void createModelInstance(Vector3 playerPosition, int viewDistance) {
+        if (!modelDirty) {
+            return;
+        }
+        int currentViewDistance = (int) (double) viewDistance;
         ModelBuilder modelBuilder = new ModelBuilder();
-
         modelBuilder.begin();
-        MeshPartBuilder meshPartBuilder = modelBuilder.part("blocks", GL30.GL_TRIANGLES, VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates, new Material());
+
+        MeshPartBuilder meshPartBuilder = modelBuilder.part("blocks", GL30.GL_TRIANGLES,
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates, new Material());
 
         int startX = Math.max((int) (playerPosition.x - viewDistance), 0);
         int startY = Math.max((int) (playerPosition.y - viewDistance), 0);
@@ -61,23 +75,54 @@ public class Chunk implements Screen {
                         Vector3 position = new Vector3(x, y, z);
                         meshPartBuilder.setVertexTransform(new Matrix4().trn(position));
                         meshPartBuilder.addMesh(block.getModel().meshParts.get(0).mesh);
-                        incrementBlockCount(); // Increment the block count when a block is generated
+                    }
+                }
+            }
+        }
+        if (!isChunkWithinViewDistance(playerPosition, viewDistance)) {
+            unloadChunk();
+            return;
+        }
+        model = modelBuilder.end();
+        modelInstance = new ModelInstance(model);
+        modelDirty = false;
+    }
+    private boolean isChunkWithinViewDistance(Vector3 playerPosition, int viewDistance) {
+        int startX = Math.max((int) (playerPosition.x - viewDistance), 0);
+        int startY = Math.max((int) (playerPosition.y - viewDistance), 0);
+        int startZ = Math.max((int) (playerPosition.z - viewDistance), 0);
+
+        int endX = Math.min((int) (playerPosition.x + viewDistance), width - 1);
+        int endY = Math.min((int) (playerPosition.y + viewDistance), height - 1);
+        int endZ = Math.min((int) (playerPosition.z + viewDistance), length - 1);
+
+        // Check if any corner of the chunk is within the view distance
+        return startX <= endX && startY <= endY && startZ <= endZ;
+    }
+
+    private void unloadChunk() {
+        if (!loaded) {
+            return; // Chunk is already unloaded
+        }
+
+        modelInstance = null; // Set the model instance to null
+
+        // Dispose of blocks and associated resources
+        for (int z = 0; z < length; z++) {
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    Block block = chunkBlocks[x][y];
+                    if (block != null) {
+                        block.dispose();
+                        chunkBlocks[x][y] = null;
                     }
                 }
             }
         }
 
-        Model model = modelBuilder.end();
-        modelInstance = new ModelInstance(model);
+        loaded = false; // Set the loaded flag to false
     }
 
-    public int getBlockCount() {
-        return blockCount;
-    }
-
-    private void incrementBlockCount() {
-        blockCount++;
-    }
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
@@ -116,6 +161,7 @@ public class Chunk implements Screen {
                 block = new Block(height);
                 chunkBlocks[x][y] = block;
             }
+            modelDirty = true; // Mark the model as dirty when a block's height changes
         }
     }
 

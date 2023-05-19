@@ -22,7 +22,8 @@ import fr.iamacat.iamacatblockgame.player.Player;
 
 public class TestWorldScene implements Screen {
 
-    private float viewDistance = 8f; // Replace 10f with the desired value render distance in chunks
+    private float viewDistance = 2f; // Initial view distance in chunks
+    private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
 
     private SpriteBatch batch;
     private PerspectiveCamera camera;
@@ -35,11 +36,19 @@ public class TestWorldScene implements Screen {
     private Model terrainModel;
     private Model objectModel;
     private Chunk[][] chunks;
+    private float elapsedTime = 0f;
+
     public TestWorldScene(SpriteBatch batch, Chunk[][] chunks) {
         this.batch = batch;
         this.chunks = chunks;
+
+        // Initialize the player object
+        player = new Player(new Vector3(0f, 0f, 0f));
+
+        // Call the create() method after initializing the player object
         create();
     }
+
     private void create() {
         modelBatch = new ModelBatch();
         environment = createEnvironment();
@@ -103,6 +112,7 @@ public class TestWorldScene implements Screen {
         env.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f)); // Improved lighting
         return env;
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -113,6 +123,17 @@ public class TestWorldScene implements Screen {
         for (Chunk[] row : chunks) {
             for (Chunk chunk : row) {
                 modelBatch.render(chunk.getModelInstance(), environment);
+            }
+        }
+
+        // Update the view distance over time
+        elapsedTime += delta;
+        viewDistance = Math.min(viewDistance + viewDistanceIncrement * elapsedTime, 32f);
+
+        // Update the view distance for each chunk
+        for (Chunk[] row : chunks) {
+            for (Chunk chunk : row) {
+                chunk.createModelInstance(player.getPosition(), (int) viewDistance);
             }
         }
 
@@ -143,7 +164,6 @@ public class TestWorldScene implements Screen {
                     player.getPosition().y + rightDirection.y * movementSpeed * Gdx.graphics.getDeltaTime(),
                     player.getPosition().z + rightDirection.z * movementSpeed * Gdx.graphics.getDeltaTime());
         }
-
 
         // Handle mouse input
         float mouseSensitivity = 0.2f;
