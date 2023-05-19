@@ -18,17 +18,18 @@ public class TestWorldScene implements Screen {
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
     private Environment environment;
-    private ModelInstance playerModelInstance;
     private Player player;
     private ModelInstance terrain;
     private ModelInstance otherObject;
+    private Model terrainModel;
+    private Model objectModel;
 
     @Override
     public void show() {
         // Set up the camera with appropriate settings
         float fieldOfView = 60f; // Set the desired field of view angle
         camera = new PerspectiveCamera(fieldOfView, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0f, 0f, 10f); // Adjusted camera position
+        camera.position.set(0f, 5f, 10f); // Adjusted camera position
         camera.lookAt(0f, 0f, 0f);
         camera.near = 0.1f; // Set the near clipping plane distance
         camera.far = 100f; // Set the far clipping plane distance
@@ -43,12 +44,29 @@ public class TestWorldScene implements Screen {
         environment = createEnvironment();
 
         // Create a terrain model
-        Model terrainModel = createTerrainModel();
+        if (terrainModel == null) {
+            ModelBuilder modelBuilder = new ModelBuilder();
+            modelBuilder.begin();
+            modelBuilder.node().id = "terrain";
+            modelBuilder.part("terrain", GL30.GL_TRIANGLES, Usage.Position | Usage.Normal,
+                            new Material(ColorAttribute.createDiffuse(Color.GREEN)))
+                    .box(10f, 1f, 10f); // Adjusted terrain size
+            terrainModel = modelBuilder.end();
+        }
         terrain = new ModelInstance(terrainModel);
 
         // Create another 3D object model
-        Model objectModel = createObjectModel();
+        if (objectModel == null) {
+            ModelBuilder modelBuilder = new ModelBuilder();
+            modelBuilder.begin();
+            modelBuilder.node().id = "object";
+            modelBuilder.part("object", GL30.GL_TRIANGLES, Usage.Position | Usage.Normal,
+                            new Material(ColorAttribute.createDiffuse(Color.YELLOW)))
+                    .box(2f, 2f, 2f); // Added a more complex 3D object
+            objectModel = modelBuilder.end();
+        }
         otherObject = new ModelInstance(objectModel);
+        otherObject.transform.setToTranslation(3f, 0.5f, 0f); // Adjusted position of the other object
     }
 
     private Environment createEnvironment() {
@@ -56,26 +74,6 @@ public class TestWorldScene implements Screen {
         env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.6f, 0.6f, 0.6f, 1f));
         env.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f)); // Improved lighting
         return env;
-    }
-
-    private Model createTerrainModel() {
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
-        modelBuilder.node().id = "terrain";
-        modelBuilder.part("terrain", GL30.GL_TRIANGLES, Usage.Position | Usage.Normal,
-                        new Material(ColorAttribute.createDiffuse(Color.GREEN)))
-                .box(10f, 1f, 10f); // Adjusted terrain size
-        return modelBuilder.end();
-    }
-
-    private Model createObjectModel() {
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
-        modelBuilder.node().id = "object";
-        modelBuilder.part("object", GL30.GL_TRIANGLES, Usage.Position | Usage.Normal,
-                        new Material(ColorAttribute.createDiffuse(Color.RED)))
-                .box(2f, 2f, 2f); // Added a more complex 3D object
-        return modelBuilder.end();
     }
 
     @Override
@@ -89,21 +87,58 @@ public class TestWorldScene implements Screen {
 
         // Update the player position based on input
         float movementSpeed = 5f;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.setPosition(player.getPosition().x, player.getPosition().y + movementSpeed * Gdx.graphics.getDeltaTime(), player.getPosition().z);
+        if (Gdx.input.isKeyPressed(Input.Keys.Z)) { // Use Z for moving forward
+            player.setPosition(player.getPosition().x + camera.direction.x * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().y + camera.direction.y * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().z + camera.direction.z * movementSpeed * Gdx.graphics.getDeltaTime());
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.setPosition(player.getPosition().x, player.getPosition().y - movementSpeed * Gdx.graphics.getDeltaTime(), player.getPosition().z);
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) { // Use S for moving backward
+            player.setPosition(player.getPosition().x - camera.direction.x * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().y - camera.direction.y * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().z - camera.direction.z * movementSpeed * Gdx.graphics.getDeltaTime());
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.setPosition(player.getPosition().x - movementSpeed * Gdx.graphics.getDeltaTime(), player.getPosition().y, player.getPosition().z);
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) { // Use Q for moving left
+            Vector3 rightDirection = new Vector3(camera.direction).crs(camera.up).nor();
+            player.setPosition(player.getPosition().x - rightDirection.x * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().y - rightDirection.y * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().z - rightDirection.z * movementSpeed * Gdx.graphics.getDeltaTime());
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.setPosition(player.getPosition().x + movementSpeed * Gdx.graphics.getDeltaTime(), player.getPosition().y, player.getPosition().z);
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) { // Use D for moving right
+            Vector3 rightDirection = new Vector3(camera.direction).crs(camera.up).nor();
+            player.setPosition(player.getPosition().x + rightDirection.x * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().y + rightDirection.y * movementSpeed * Gdx.graphics.getDeltaTime(),
+                    player.getPosition().z + rightDirection.z * movementSpeed * Gdx.graphics.getDeltaTime());
         }
 
-        // Update the camera's position based on player position
+
+        // Handle mouse input
+        float mouseSensitivity = 0.2f;
+        float deltaX = Gdx.input.getDeltaX() * mouseSensitivity;
+        float deltaY = Gdx.input.getDeltaY() * mouseSensitivity;
+
+        // Calculate the rotation angles based on the mouse input
+        float yaw = -deltaX;
+        float pitch = -deltaY;
+
+        // Rotate the camera around the player based on the rotation angles
+        camera.rotateAround(player.getPosition(), Vector3.Y, yaw);
+
+        // Calculate the horizontal rotation axis perpendicular to the camera's up vector
+        Vector3 horizontalRotationAxis = new Vector3(camera.up).crs(camera.direction).nor();
+
+        // Rotate the camera around the horizontal rotation axis based on the pitch angle
+        camera.rotateAround(player.getPosition(), horizontalRotationAxis, pitch);
+
+        // Update the camera's direction based on the rotated angles
+        camera.direction.rotate(Vector3.Y, yaw);
+
+        // Reset the camera's pitch to prevent tilting
+        camera.direction.y = 0;
+        camera.direction.nor();
+
+        // Update the camera's position and lookAt target
         camera.position.set(player.getPosition());
+        camera.lookAt(camera.position.cpy().add(camera.direction));
         camera.update();
 
         // Render 3D models using ModelBatch
@@ -114,16 +149,9 @@ public class TestWorldScene implements Screen {
         modelBatch.end();
     }
 
-    private void handleInput() {
-        // Handle other input if needed
-    }
-
     @Override
     public void resize(int width, int height) {
-        // Update the camera's viewport when the screen is resized
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
-        camera.update();
+
     }
 
     @Override
@@ -141,6 +169,10 @@ public class TestWorldScene implements Screen {
 
     }
 
+    private void handleInput() {
+        // Handle other input if needed
+    }
+
     // Implement other Screen interface methods as needed
 
     @Override
@@ -148,7 +180,7 @@ public class TestWorldScene implements Screen {
         // Dispose of resources
         modelBatch.dispose();
         player.dispose();
-        terrain.model.dispose();
-        otherObject.model.dispose();
+        terrainModel.dispose();
+        objectModel.dispose();
     }
 }

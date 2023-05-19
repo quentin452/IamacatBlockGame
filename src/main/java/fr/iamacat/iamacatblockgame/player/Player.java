@@ -1,7 +1,9 @@
 package fr.iamacat.iamacatblockgame.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 
@@ -12,8 +14,9 @@ public class Player {
     public Player(Vector3 position) {
         this.position = position;
         ModelBuilder modelBuilder = new ModelBuilder();
-        Model model = modelBuilder.createBox(1f, 1f, 1f,
-                new Material(), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        Model model = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 16, 16,
+                new Material(ColorAttribute.createDiffuse(Color.RED)),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         modelInstance = new ModelInstance(model);
         modelInstance.transform.setToTranslation(position);
     }
