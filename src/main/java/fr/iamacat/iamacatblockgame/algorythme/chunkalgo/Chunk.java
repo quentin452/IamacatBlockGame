@@ -46,11 +46,6 @@ public class Chunk {
         modelInstance = new ModelInstance(model);
     }
 
-
-    public void render(ModelBatch modelBatch) {
-        modelBatch.render(modelInstance);
-    }
-
     public int getWidth() {
         return width;
     }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-
+// it seem this class is work correctly
 public class Block {
     private float height;
     private Texture texture;
@@ -15,14 +15,18 @@ public class Block {
     public Block(float height) {
         this.height = height;
         // Load the texture or any other resources needed
+       // System.out.println("Loading texture: textures/blocks/block_texture.png");
         texture = new Texture("textures/blocks/block_texture.png");
 
         // Create the 3D model for the block
         ModelBuilder modelBuilder = new ModelBuilder();
 
+        System.out.println("Creating block model...");
         modelBuilder.begin();
         modelBuilder.part("block", GL30.GL_TRIANGLES, VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates, new Material()).box(1f, height, 1f);
         model = modelBuilder.end();
+
+        System.out.println("Block model created successfully.");
     }
 
     public Model getModel() {
@@ -39,5 +43,6 @@ public class Block {
 
     public void dispose() {
         texture.dispose();
+        System.out.println("Block resources disposed.");
     }
 }

@@ -49,6 +49,7 @@ public class WorldGenerator {
 
                                 for (int z = 0; z < chunkLength; z++) {
                                     if (z < height * chunkLength) {
+                                       // System.out.println("Generating block: " + x + ", " + y + ", " + z);
                                         blocks[x][y][z] = new Block(height); // Pass the height value to the Block constructor
                                     }
                                 }

@@ -35,27 +35,29 @@ public class WorldGeneratorScene implements Screen {
     private WorldGenerator worldGenerator;
     private boolean shouldExit = false;
     private Player player;
-
-    public boolean shouldExit() {
-        return shouldExit;
-    }
-
-    private void exit() {
-        shouldExit = true;
-    }
-
     private Chunk[][] chunks;
 
     public WorldGeneratorScene(Chunk[][] chunks, WorldGenerator worldGenerator) {
         this.chunks = chunks;
         this.worldGenerator = worldGenerator;
-        System.out.println("Creating WorldGeneratorScene...");
-        create(); // Call the create() method here to initialize the camera and other components
-        System.out.println("WorldGeneratorScene created successfully");
+        create();
     }
 
-    public void create() {
+    private void create() {
+        initializeCamera();
 
+        Block[][][] blocks = worldGenerator.generateBlocks();
+        List<ModelInstance> instances = createBlockInstances(blocks);
+
+        instance = createModelInstance(instances);
+
+        environment = createEnvironment();
+        cameraController = createCameraController();
+
+        player = new Player();
+    }
+
+    private void initializeCamera() {
         modelBatch = new ModelBatch();
         camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 10f);
@@ -63,9 +65,9 @@ public class WorldGeneratorScene implements Screen {
         camera.near = 1f;
         camera.far = 300f;
         camera.update();
+    }
 
-        Block[][][] blocks = worldGenerator.generateBlocks();
-
+    private List<ModelInstance> createBlockInstances(Block[][][] blocks) {
         List<ModelInstance> instances = new ArrayList<>();
 
         for (int x = 0; x < blocks.length; x++) {
@@ -89,27 +91,37 @@ public class WorldGeneratorScene implements Screen {
             }
         }
 
-        instance = new ModelInstance(new Model()); // Create an empty ModelInstance
+        return instances;
+    }
 
+    private ModelInstance createModelInstance(List<ModelInstance> instances) {
+        ModelInstance modelInstance = new ModelInstance(new Model());
         Node parentNode = new Node();
-        for (ModelInstance modelInstance : instances) {
+
+        for (ModelInstance instance : instances) {
             Node node = new Node();
-            node.translation.set(modelInstance.transform.getTranslation(Vector3.Zero));
-            node.rotation.set(modelInstance.transform.getRotation(new Quaternion()));
-            node.scale.set(modelInstance.transform.getScale(new Vector3(1f, 1f, 1f)));
-            node.parts.addAll(modelInstance.model.nodes.get(0).parts);
+            node.translation.set(instance.transform.getTranslation(Vector3.Zero));
+            node.rotation.set(instance.transform.getRotation(new Quaternion()));
+            node.scale.set(instance.transform.getScale(new Vector3(1f, 1f, 1f)));
+            node.parts.addAll(instance.model.nodes.get(0).parts);
             parentNode.addChild(node);
         }
-        instance.nodes.add(parentNode);
 
-        environment = new Environment();
+        modelInstance.nodes.add(parentNode);
+        return modelInstance;
+    }
+
+    private Environment createEnvironment() {
+        Environment environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        return environment;
+    }
 
-        cameraController = new CameraInputController(camera);
-        Gdx.input.setInputProcessor(cameraController);
-
-        player = new Player();
+    private CameraInputController createCameraController() {
+        CameraInputController controller = new CameraInputController(camera);
+        Gdx.input.setInputProcessor(controller);
+        return controller;
     }
 
     @Override
@@ -127,16 +139,12 @@ public class WorldGeneratorScene implements Screen {
         modelBatch.render(instance, environment);
         modelBatch.end();
 
-        // Update player position (example)
         player.setPosition(100, 100);
-
-        // Update camera position
         camera.position.set(player.getPosition());
         camera.update();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             exit();
-            System.out.println("Exit key pressed");
         }
     }
 
@@ -160,8 +168,16 @@ public class WorldGeneratorScene implements Screen {
 
     }
 
+    public boolean shouldExit() {
+        return shouldExit;
+    }
+
+    private void exit() {
+        shouldExit = true;
+    }
+
+    @Override
     public void dispose() {
         modelBatch.dispose();
-        System.out.println("Disposed modelBatch");
     }
 }
