@@ -21,6 +21,8 @@ public class Main extends Game {
         config.title = "IamAcat Block Game";
         config.width = 1280;
         config.height = 720;
+       // config.foregroundFPS = 200; // Set the foreground FPS to 0 for unlimited FPS
+       // config.vSyncEnabled = false; // Disable vsync
         config.addIcon("textures/gamescreen/icon.png", Files.FileType.Internal); // Set the path to your icon file
 
         new LwjglApplication(new Main(), config);
@@ -28,16 +30,16 @@ public class Main extends Game {
 
     @Override
     public void create() {
-
         batch = new SpriteBatch();
         titleScreen = new TitleScreen(batch);
-
         setScreen(titleScreen);
     }
 
     @Override
     public void render() {
-        clearScreen();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+
         super.render();
     }
 
@@ -46,6 +48,20 @@ public class Main extends Game {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
     }
 
+    private void update() {
+        // Update your game logic here
+        // ...
+    }
+
+    private void draw() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+
+        batch.begin();
+        // Render your game objects here using the batch
+        // ...
+        batch.end();
+    }
     @Override
     public void dispose() {
         batch.dispose();

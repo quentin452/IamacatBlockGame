@@ -34,7 +34,9 @@ public class TitleScreen implements Screen, InputProcessor {
         optionsButton = new Button("Options", 100, 300, 100, 50,
                 new Texture("textures/gamescreen/button/optionsbutton.png"));
 
+
         Gdx.input.setInputProcessor(this);
+
     }
 
     public void update() {
@@ -98,6 +100,7 @@ public class TitleScreen implements Screen, InputProcessor {
             System.out.println("Options button clicked");
             OptionsScreen optionsScreen = new OptionsScreen(batch);
             ((Game) Gdx.app.getApplicationListener()).setScreen(optionsScreen);
+
             return true;
         }
 

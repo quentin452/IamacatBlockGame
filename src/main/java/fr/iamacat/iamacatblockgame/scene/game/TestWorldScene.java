@@ -12,8 +12,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TestWorldScreen;
 import fr.iamacat.iamacatblockgame.player.Player;
 
@@ -22,14 +25,29 @@ public class TestWorldScene implements Screen {
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
     private Environment environment;
+    private CameraInputController cameraController;
     private Player player;
     private ModelInstance terrain;
     private ModelInstance otherObject;
     private Model terrainModel;
     private Model objectModel;
-    public TestWorldScene(SpriteBatch batch) {
+    private Chunk[][] chunks;
+    public TestWorldScene(SpriteBatch batch, Chunk[][] chunks) {
         this.batch = batch;
+        this.chunks = chunks;
+        create();
     }
+    private void create() {
+        modelBatch = new ModelBatch();
+        environment = createEnvironment();
+
+        for (Chunk[] row : chunks) {
+            for (Chunk chunk : row) {
+                chunk.createModelInstance(); // Create the ModelInstance for each chunk
+            }
+        }
+    }
+
     @Override
     public void show() {
 
@@ -82,12 +100,18 @@ public class TestWorldScene implements Screen {
         env.add(new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f)); // Improved lighting
         return env;
     }
-
     @Override
     public void render(float delta) {
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         // Clear the screen
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1f);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+
+        for (Chunk[] row : chunks) {
+            for (Chunk chunk : row) {
+                modelBatch.render(chunk.getModelInstance(), environment);
+            }
+        }
 
         // Handle input
         handleInput();
@@ -186,7 +210,6 @@ public class TestWorldScene implements Screen {
 
     @Override
     public void dispose() {
-
         // Dispose of resources
         modelBatch.dispose();
         player.dispose();

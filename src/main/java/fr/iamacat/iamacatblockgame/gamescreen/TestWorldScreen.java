@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.savesystem.SaveData;
 import fr.iamacat.iamacatblockgame.savesystem.SaveSystem;
 import fr.iamacat.iamacatblockgame.player.Player;
@@ -29,6 +30,7 @@ public class TestWorldScreen implements Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private Player player;
+    private Chunk[][] chunks;
     private TestWorldScene testWorldScene;
 
     public TestWorldScreen(SpriteBatch batch) {
@@ -57,7 +59,7 @@ public class TestWorldScreen implements Screen, InputProcessor {
           //      testWorldScene = saveData.getTestWorldScene();
 
                 // Switch to the TestWorldScene
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new TestWorldScene(batch));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new TestWorldScene(batch,chunks));
             }
         });
 

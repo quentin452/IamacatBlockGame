@@ -35,6 +35,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
     private Label fpsLabel;
     private float accumulator;
     private float frameTime;
+    private Chunk[][] chunks;
 
     public PlayButtonScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -82,11 +83,26 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         createTestWorldButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                testWorldScene = new TestWorldScene(batch);
+                // Create an instance of WorldGenerator
+                WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
 
-                ((Game) Gdx.app.getApplicationListener()).setScreen(testWorldScene);
+                // Generate the blocks
+                System.out.println("Generating blocks...");
+                Block[][][] blocks = worldGenerator.generateBlocks();
+                System.out.println("Blocks generated");
+
+                // Generate the chunks
+                System.out.println("Generating chunks...");
+                Chunk[][] chunks = worldGenerator.generateChunks(blocks);
+                System.out.println("Chunks generated");
+
+                // Pass the initialized chunks array to the TestWorldScene constructor
+                TestWorldScene testscene = new TestWorldScene(batch, chunks);
+
+                ((Game) Gdx.app.getApplicationListener()).setScreen(testscene);
             }
         });
+
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
