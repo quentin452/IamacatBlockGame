@@ -1,15 +1,6 @@
 package fr.iamacat.iamacatblockgame.scene.hud;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
-import fr.iamacat.iamacatblockgame.scene.game.WorldGeneratorScene;
-import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
-import fr.iamacat.iamacatblockgame.player.Camera;
-import fr.iamacat.iamacatblockgame.player.Player;
 
 public class GameScreen implements Screen {
 
