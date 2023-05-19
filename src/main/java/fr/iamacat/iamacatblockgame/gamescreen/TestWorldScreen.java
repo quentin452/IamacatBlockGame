@@ -189,7 +189,6 @@ public class TestWorldScreen implements Screen, InputProcessor {
         Gdx.input.setInputProcessor(stage);
     }
 
-
     @Override
     public void dispose() {
         TestWorldTexture.dispose();

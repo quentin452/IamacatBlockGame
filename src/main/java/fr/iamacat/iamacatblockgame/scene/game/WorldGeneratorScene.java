@@ -32,6 +32,12 @@ public class WorldGeneratorScene implements Screen {
         modelBatch = new ModelBatch();
         environment = createEnvironment();
         cameraController = createCameraController();
+
+        for (Chunk[] row : chunks) {
+            for (Chunk chunk : row) {
+                chunk.createModelInstance(); // Create the ModelInstance for each chunk
+            }
+        }
     }
 
     private void initializeCamera() {
