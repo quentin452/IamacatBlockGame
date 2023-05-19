@@ -39,10 +39,11 @@ public class WorldGeneratorScene implements Screen {
     private void exit() {
         shouldExit = true;
     }
+        private Chunk[][] chunks;
 
-    public WorldGeneratorScene(WorldGenerator worldGenerator) {
-        this.worldGenerator = worldGenerator;
-    }
+        public WorldGeneratorScene(Chunk[][] chunks) {
+            this.chunks = chunks;
+        }
 
     public void create() {
         logger.debug("Creating WorldGeneratorScene...");

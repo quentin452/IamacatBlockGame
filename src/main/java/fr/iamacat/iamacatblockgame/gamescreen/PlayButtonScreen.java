@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.WorldGeneratorScene;
+import fr.iamacat.iamacatblockgame.player.GameScreen;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
@@ -56,21 +56,21 @@ public class PlayButtonScreen implements Screen, InputProcessor {
                 // Create an instance of WorldGenerator
                 WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
 
-                // Call WorldGeneratorScene to generate and render the world
-                WorldGeneratorScene worldGeneratorScene = new WorldGeneratorScene(worldGenerator);
-                worldGeneratorScene.create();  // Initialize the scene
-
-                // Set the game's screen to the worldGeneratorScene
-                ((Game) Gdx.app.getApplicationListener()).setScreen(worldGeneratorScene);
-
                 // Generate the blocks
+                System.out.println("Generating blocks...");
                 Block[][][] blocks = worldGenerator.generateBlocks();
+                System.out.println("Blocks generated");
 
                 // Generate the chunks
+                System.out.println("Generating chunks...");
                 Chunk[][] chunks = worldGenerator.generateChunks(blocks);
+                System.out.println("Chunks generated");
 
-                // Set the game's screen to the worldGeneratorScene
-                ((Game) Gdx.app.getApplicationListener()).setScreen(worldGeneratorScene);
+                // Create an instance of GameScreen and pass the generated chunks
+                GameScreen gameScreen = new GameScreen(chunks);
+
+                // Set the game's screen to the GameScreen
+                ((Game) Gdx.app.getApplicationListener()).setScreen(gameScreen);
             }
         });
 

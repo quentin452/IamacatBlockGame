@@ -25,6 +25,7 @@ public class WorldGenerator {
     }
 
     public Block[][][] generateBlocks() {
+        System.out.println("Generating blocks...");
         ByteBuffer heightMapBuffer = generateHeightMap();
 
         int numChunksX = worldWidth / chunkWidth;
@@ -67,7 +68,7 @@ public class WorldGenerator {
                 e.printStackTrace();
             }
         }
-
+        System.out.println("Blocks generated");
         return blocks;
     }
 

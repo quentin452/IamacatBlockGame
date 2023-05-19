@@ -7,10 +7,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TitleScreen;
-import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
+
 
 
 public class Main extends Game {
@@ -34,6 +32,7 @@ public class Main extends Game {
     public void create() {
         batch = new SpriteBatch();
         titleScreen = new TitleScreen(batch);
+
         setScreen(titleScreen);
     }
 
