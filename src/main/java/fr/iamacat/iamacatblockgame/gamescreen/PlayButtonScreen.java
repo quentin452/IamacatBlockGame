@@ -56,15 +56,18 @@ public class PlayButtonScreen implements Screen, InputProcessor {
                 // Create an instance of WorldGenerator
                 WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
 
+                // Call WorldGeneratorScene to generate and render the world
+                WorldGeneratorScene worldGeneratorScene = new WorldGeneratorScene(worldGenerator);
+                worldGeneratorScene.create();  // Initialize the scene
+
+                // Set the game's screen to the worldGeneratorScene
+                ((Game) Gdx.app.getApplicationListener()).setScreen(worldGeneratorScene);
+
                 // Generate the blocks
                 Block[][][] blocks = worldGenerator.generateBlocks();
 
                 // Generate the chunks
                 Chunk[][] chunks = worldGenerator.generateChunks(blocks);
-
-                // Call WorldGeneratorScene to generate and render the world
-                WorldGeneratorScene worldGeneratorScene = new WorldGeneratorScene();
-                worldGeneratorScene.create();  // Initialize the scene
 
                 // Set the game's screen to the worldGeneratorScene
                 ((Game) Gdx.app.getApplicationListener()).setScreen(worldGeneratorScene);

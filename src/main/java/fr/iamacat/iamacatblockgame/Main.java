@@ -14,8 +14,6 @@ import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 
 public class Main extends Game {
-    private WorldGenerator worldGenerator;
-    private Chunk[][] chunks; // Store the generated chunks
     private SpriteBatch batch;
     private TitleScreen titleScreen;
 

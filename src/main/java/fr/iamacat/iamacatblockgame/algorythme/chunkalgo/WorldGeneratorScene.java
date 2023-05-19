@@ -40,6 +40,10 @@ public class WorldGeneratorScene implements Screen {
         shouldExit = true;
     }
 
+    public WorldGeneratorScene(WorldGenerator worldGenerator) {
+        this.worldGenerator = worldGenerator;
+    }
+
     public void create() {
         logger.debug("Creating WorldGeneratorScene...");
 
@@ -51,7 +55,6 @@ public class WorldGeneratorScene implements Screen {
         camera.far = 300f;
         camera.update();
 
-        worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
         Block[][][] blocks = worldGenerator.generateBlocks();
 
         List<ModelInstance> instances = new ArrayList<>();
