@@ -67,38 +67,38 @@ public class Chunk implements Screen {
             return;
         }
 
-        ModelBuilder modelBuilder = new ModelBuilder();
-        modelBuilder.begin();
+        if (model == null) {
+            ModelBuilder modelBuilder = new ModelBuilder();
+            modelBuilder.begin();
 
-        MeshPartBuilder meshPartBuilder = modelBuilder.part("blocks", GL30.GL_TRIANGLES,
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates, new Material());
+            MeshPartBuilder meshPartBuilder = modelBuilder.part("blocks", GL30.GL_TRIANGLES,
+                    VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates, new Material());
 
-        int startX = Math.max((int) (playerPosition.x - viewDistance), 0);
-        int startY = Math.max((int) (playerPosition.y - viewDistance), 0);
-        int startZ = Math.max((int) (playerPosition.z - viewDistance), 0);
+            int startX = Math.max((int) (playerPosition.x - viewDistance), 0);
+            int startY = Math.max((int) (playerPosition.y - viewDistance), 0);
+            int startZ = Math.max((int) (playerPosition.z - viewDistance), 0);
 
-        int endX = Math.min((int) (playerPosition.x + viewDistance), width - 1);
-        int endY = Math.min((int) (playerPosition.y + viewDistance), height - 1);
-        int endZ = Math.min((int) (playerPosition.z + viewDistance), length - 1);
+            int endX = Math.min((int) (playerPosition.x + viewDistance), width - 1);
+            int endY = Math.min((int) (playerPosition.y + viewDistance), height - 1);
+            int endZ = Math.min((int) (playerPosition.z + viewDistance), length - 1);
 
-        for (int z = startZ; z <= endZ; z++) {
-            for (int y = startY; y <= endY; y++) {
-                for (int x = startX; x <= endX; x++) {
-                    Block block = chunkBlocks.get(x).get(y);
-                    if (block != null) {
-                        Vector3 position = new Vector3(x, y, z);
-                        meshPartBuilder.setVertexTransform(new Matrix4().trn(position));
-                        meshPartBuilder.addMesh(block.getModel().meshParts.get(0).mesh);
+            for (int z = startZ; z <= endZ; z++) {
+                for (int y = startY; y <= endY; y++) {
+                    List<Block> row = chunkBlocks.get(y);
+                    for (int x = startX; x <= endX; x++) {
+                        Block block = row.get(x);
+                        if (block != null) {
+                            Vector3 position = new Vector3(x, y, z);
+                            meshPartBuilder.setVertexTransform(new Matrix4().trn(position));
+                            meshPartBuilder.addMesh(block.getModel().meshParts.get(0).mesh);
+                        }
                     }
                 }
             }
+
+            model = modelBuilder.end();
         }
-        // Add the following check to skip generating the model if the chunk is outside the view distance
-        if (!isChunkWithinViewDistance(playerPosition, viewDistance)) {
-            unloadChunk();
-            return;
-        }
-        model = modelBuilder.end();
+
         modelInstance = new ModelInstance(model);
         modelDirty = false;
     }
@@ -121,18 +121,19 @@ public class Chunk implements Screen {
             return; // Chunk is already unloaded
         }
 
-        modelInstance.model.dispose();
-        modelInstance = null; // Set the model instance to null
+        if (modelInstance != null) {
+            modelInstance.model.dispose();
+            modelInstance = null; // Set the model instance to null
+        }
 
         // Dispose of blocks and associated resources
-        for (int z = 0; z < length; z++) {
-            for (int y = 0; y < height; y++) {
-                Block block = chunkBlocks.get(z).get(y);
+        for (List<Block> row : chunkBlocks) {
+            for (Block block : row) {
                 if (block != null) {
                     block.dispose();
-                    chunkBlocks.get(z).set(y, null);
                 }
             }
+            row.clear();
         }
 
         loaded = false; // Set the loaded flag to false
@@ -149,19 +150,18 @@ public class Chunk implements Screen {
     public void setLoadingTask(Future<Void> loadingTask) {
         this.loadingTask = loadingTask;
     }
+
     public void setLoaded(boolean loaded) {
         this.loaded = loaded;
     }
+
     public Vector3 getCenterPoint() {
         return new Vector3((float) width / 2, (float) height / 2, (float) length / 2);
     }
+
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-
-        spriteBatch.begin();
-        spriteBatch.end();
+        // Nothing to render in this screen
     }
 
     public int getWidth() {
@@ -178,7 +178,7 @@ public class Chunk implements Screen {
 
     public float getBlockHeight(int x, int y, int z) {
         if (isValidBlockCoordinate(x, y, z)) {
-            Block block = chunkBlocks.get(x).get(y);
+            Block block = chunkBlocks.get(y).get(x);
             return block != null ? block.getHeight() : 0.0f;
         }
         return 0.0f;
@@ -186,12 +186,13 @@ public class Chunk implements Screen {
 
     public void setBlockHeight(int x, int y, int z, float height) {
         if (isValidBlockCoordinate(x, y, z)) {
-            Block block = chunkBlocks.get(x).get(y);
+            List<Block> row = chunkBlocks.get(y);
+            Block block = row.get(x);
             if (block != null) {
                 block.setHeight(height);
             } else {
                 block = new Block(height);
-                chunkBlocks.get(x).set(y, block);
+                row.set(x, block);
             }
             modelDirty = true; // Mark the model as dirty when a block's height changes
         }
@@ -200,32 +201,31 @@ public class Chunk implements Screen {
     private boolean isValidBlockCoordinate(int x, int y, int z) {
         // Limit the block coordinates to within the desired world width and height
         return x >= 0 && x < WorldSettings.DESIRED_WORLD_WIDTH && y >= 0 && y < WorldSettings.DESIRED_WORLD_HEIGHT && z >= 0 && z < length;
-
     }
 
     @Override
     public void show() {
-
+        // No additional actions needed when showing the screen
     }
 
     @Override
     public void resize(int width, int height) {
-
+        // No additional actions needed when resizing the screen
     }
 
     @Override
     public void pause() {
-
+        // No additional actions needed when pausing the screen
     }
 
     @Override
     public void resume() {
-
+        // No additional actions needed when resuming the screen
     }
 
     @Override
     public void hide() {
-
+        // No additional actions needed when hiding the screen
     }
 
     public void dispose() {
@@ -235,16 +235,16 @@ public class Chunk implements Screen {
         }
 
         // Dispose of blocks and associated resources
-        for (int z = 0; z < length; z++) {
-            for (int y = 0; y < height; y++) {
-                Block block = chunkBlocks.get(z).get(y);
+        for (List<Block> row : chunkBlocks) {
+            for (Block block : row) {
                 if (block != null) {
                     block.dispose();
-                    chunkBlocks.get(z).set(y, null);
                 }
             }
+            row.clear();
         }
         chunkBlocks = null;
+
 
         if (font != null) {
             font.dispose();
@@ -256,7 +256,6 @@ public class Chunk implements Screen {
             spriteBatch = null;
         }
     }
-
 
     private int getIndex(int x, int y, int z) {
         return x + y * width + z * width * height;
