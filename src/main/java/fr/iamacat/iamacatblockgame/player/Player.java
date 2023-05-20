@@ -30,6 +30,11 @@ public class Player {
         return position;
     }
 
+    public void move(Vector3 movement) {
+        position.add(movement);
+        modelInstance.transform.setToTranslation(position);
+    }
+
     public void render(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(modelInstance, environment);
     }

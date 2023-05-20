@@ -37,11 +37,6 @@ public class PlayButtonScreen implements Screen, InputProcessor {
     private float accumulator;
     private float frameTime;
     private Chunk[][] chunks;
-    public static int GENERATED_WORLD_WIDTH = WorldSettings.GENERATED_WORLD_WIDTH;
-    public static int GENERATED_WORLD_HEIGHT = WorldSettings.GENERATED_WORLD_HEIGHT;
-    public static int MAX_VIEW_DISTANCE = WorldSettings.MAX_VIEW_DISTANCE;
-    public static int DESIRED_WORLD_WIDTH = WorldSettings.DESIRED_WORLD_WIDTH;
-    public static int DESIRED_WORLD_HEIGHT = WorldSettings.DESIRED_WORLD_HEIGHT;
     public PlayButtonScreen(SpriteBatch batch) {
         this.batch = batch;
         optionsScreenTexture = new Texture("textures/playbuttonscreen/playbuttonbackground.png");

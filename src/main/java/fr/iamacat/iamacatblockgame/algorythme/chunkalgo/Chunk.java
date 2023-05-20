@@ -66,11 +66,7 @@ public class Chunk implements Screen {
             unloadChunk();
             return;
         }
-        // Check if chunk is within view distance
-        if (!isChunkWithinViewDistance(playerPosition, viewDistance)) {
-            unloadChunk();
-            return;
-        }
+
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
@@ -120,7 +116,7 @@ public class Chunk implements Screen {
         return startX <= endX && startY <= endY && startZ <= endZ;
     }
 
-    private void unloadChunk() {
+    public void unloadChunk() {
         if (!loaded) {
             return; // Chunk is already unloaded
         }
