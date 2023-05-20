@@ -20,6 +20,7 @@ import fr.iamacat.iamacatblockgame.savesystem.SaveData;
 import fr.iamacat.iamacatblockgame.savesystem.SaveSystem;
 import fr.iamacat.iamacatblockgame.player.Player;
 import fr.iamacat.iamacatblockgame.scene.game.TestWorldScene;
+import fr.iamacat.iamacatblockgame.settings.WorldSettings;
 
 public class TestWorldScreen implements Screen, InputProcessor {
     private SpriteBatch batch;
@@ -30,7 +31,7 @@ public class TestWorldScreen implements Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private Player player;
-    private Chunk[][] chunks;
+    private Chunk[][] chunks = new Chunk[WorldSettings.GENERATED_WORLD_WIDTH][WorldSettings.GENERATED_WORLD_HEIGHT];
     private TestWorldScene testWorldScene;
 
     public TestWorldScreen(SpriteBatch batch) {
@@ -124,6 +125,12 @@ public class TestWorldScreen implements Screen, InputProcessor {
         camera.unproject(touchPos);
         float mouseX = touchPos.x;
         float mouseY = touchPos.y;
+
+        // Bounds checks to restrict the player's movement within the generated world bounds
+        if (mouseX < 0 || mouseX >= WorldSettings.GENERATED_WORLD_WIDTH || mouseY < 0 || mouseY >= WorldSettings.GENERATED_WORLD_HEIGHT) {
+            return false;
+        }
+
         System.out.println("Clicked at: (" + mouseX + ", " + mouseY + ")");
         return false;
     }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import fr.iamacat.iamacatblockgame.settings.WorldSettings;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -58,7 +59,18 @@ public class Chunk implements Screen {
         if (!modelDirty) {
             return;
         }
-        int currentViewDistance = (int) (double) viewDistance;
+        // Limit the view distance to a maximum value
+        int currentViewDistance = Math.min(viewDistance, WorldSettings.MAX_VIEW_DISTANCE);
+        // Check if chunk is within view distance
+        if (!isChunkWithinViewDistance(playerPosition, currentViewDistance)) {
+            unloadChunk();
+            return;
+        }
+        // Check if chunk is within view distance
+        if (!isChunkWithinViewDistance(playerPosition, viewDistance)) {
+            unloadChunk();
+            return;
+        }
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
@@ -144,7 +156,9 @@ public class Chunk implements Screen {
     public void setLoaded(boolean loaded) {
         this.loaded = loaded;
     }
-
+    public Vector3 getCenterPoint() {
+        return new Vector3((float) width / 2, (float) height / 2, (float) length / 2);
+    }
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
@@ -188,7 +202,9 @@ public class Chunk implements Screen {
     }
 
     private boolean isValidBlockCoordinate(int x, int y, int z) {
-        return x >= 0 && x < width && y >= 0 && y < height && z >= 0 && z < length;
+        // Limit the block coordinates to within the desired world width and height
+        return x >= 0 && x < WorldSettings.DESIRED_WORLD_WIDTH && y >= 0 && y < WorldSettings.DESIRED_WORLD_HEIGHT && z >= 0 && z < length;
+
     }
 
     @Override

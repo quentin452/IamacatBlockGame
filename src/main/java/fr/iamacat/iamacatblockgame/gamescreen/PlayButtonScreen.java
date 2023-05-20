@@ -17,6 +17,7 @@ import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.scene.game.TestWorldScene;
 import fr.iamacat.iamacatblockgame.scene.game.WorldGeneratorScene;
+import fr.iamacat.iamacatblockgame.settings.WorldSettings;
 import fr.iamacat.iamacatblockgame.worldgen.core.WorldGenerator;
 
 public class PlayButtonScreen implements Screen, InputProcessor {
@@ -36,7 +37,11 @@ public class PlayButtonScreen implements Screen, InputProcessor {
     private float accumulator;
     private float frameTime;
     private Chunk[][] chunks;
-
+    public static int GENERATED_WORLD_WIDTH = WorldSettings.GENERATED_WORLD_WIDTH;
+    public static int GENERATED_WORLD_HEIGHT = WorldSettings.GENERATED_WORLD_HEIGHT;
+    public static int MAX_VIEW_DISTANCE = WorldSettings.MAX_VIEW_DISTANCE;
+    public static int DESIRED_WORLD_WIDTH = WorldSettings.DESIRED_WORLD_WIDTH;
+    public static int DESIRED_WORLD_HEIGHT = WorldSettings.DESIRED_WORLD_HEIGHT;
     public PlayButtonScreen(SpriteBatch batch) {
         this.batch = batch;
         optionsScreenTexture = new Texture("textures/playbuttonscreen/playbuttonbackground.png");
@@ -83,9 +88,21 @@ public class PlayButtonScreen implements Screen, InputProcessor {
         createTestWorldButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Create an instance of WorldGenerator
-                WorldGenerator worldGenerator = new WorldGenerator(256, 256, 16, 16, 16);
+                // Access the variables from WorldSettings class
+                int generatedWorldWidth = WorldSettings.GENERATED_WORLD_WIDTH;
+                int generatedWorldHeight = WorldSettings.GENERATED_WORLD_HEIGHT;
+                int maxViewDistance = WorldSettings.MAX_VIEW_DISTANCE;
+                int desiredWorldWidth = WorldSettings.DESIRED_WORLD_WIDTH;
+                int desiredWorldHeight = WorldSettings.DESIRED_WORLD_HEIGHT;
 
+                // Create an instance of WorldGenerator
+                WorldGenerator worldGenerator = new WorldGenerator(
+                        generatedWorldWidth,
+                        generatedWorldHeight,
+                        maxViewDistance,
+                        desiredWorldWidth,
+                        desiredWorldHeight
+                );
                 // Generate the blocks
                 System.out.println("Generating blocks...");
                 Block[][][] blocks = worldGenerator.generateBlocks();
@@ -98,7 +115,6 @@ public class PlayButtonScreen implements Screen, InputProcessor {
 
                 // Pass the initialized chunks array to the TestWorldScene constructor
                 TestWorldScene testscene = new TestWorldScene(batch, chunks);
-
                 ((Game) Gdx.app.getApplicationListener()).setScreen(testscene);
             }
         });

@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
@@ -18,9 +19,9 @@ import com.badlogic.gdx.math.Vector3;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TestWorldScreen;
 import fr.iamacat.iamacatblockgame.player.Player;
-
+import fr.iamacat.iamacatblockgame.scene.game.*;
 public class TestWorldScene implements Screen {
-
+    private int currentViewDistance;
     private float viewDistance = 5f; // Initial view distance in chunks , IMPORTANT VALUE
     private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
     private SpriteBatch batch;
@@ -125,17 +126,12 @@ public class TestWorldScene implements Screen {
         }
 
         // Update the view distance over time
+
         elapsedTime += delta;
         viewDistance = Math.min(viewDistance + viewDistanceIncrement * elapsedTime, 32f);
         // Update the chunk loading based on the player's position and view distance
 
         updateChunkLoading();
-        // Update the view distance for each chunk
-        for (Chunk[] row : chunks) {
-            for (Chunk chunk : row) {
-                chunk.createModelInstance(player.getPosition(), (int) viewDistance);
-            }
-        }
 
         // Handle input
         handleInput();
@@ -208,9 +204,21 @@ public class TestWorldScene implements Screen {
 
         for (Chunk[] row : chunks) {
             for (Chunk chunk : row) {
-                chunk.createModelInstance(playerPosition, currentViewDistance);
+                if (!chunk.isLoaded() && chunkIsWithinViewDistance(chunk)) {
+                    chunk.createModelInstance(playerPosition, currentViewDistance);
+                }
             }
         }
+    }
+    private boolean chunkIsWithinViewDistance(Chunk chunk) {
+        // Get the center point of the chunk
+        Vector3 center = chunk.getCenterPoint();
+
+        // Calculate the distance from the player to the chunk center
+        float distance = player.getPosition().dst(center);
+
+        // If the distance is less than the view distance, the chunk is in view
+        return distance <= currentViewDistance;
     }
     @Override
     public void resize(int width, int height) {

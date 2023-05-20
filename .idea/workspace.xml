@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c44d325-e720-4c24-af5c-a542c8a3d5cf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/settings/WorldSettings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Block.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/algorythme/chunkalgo/Chunk.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/PlayButtonScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/PlayButtonScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/scene/game/TestWorldScene.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/scene/game/TestWorldScene.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/worldgen/core/WorldGenerator.java" afterDir="false" />
     </list>
@@ -226,10 +227,10 @@
     <list>
       <item itemvalue="Application.Main" />
       <item itemvalue="Batch.start (1)" />
-      <item itemvalue="Gradle.IamacatBlockGame [check]" />
-      <item itemvalue="Gradle.IamacatBlockGame [buildDependents]" />
       <item itemvalue="Gradle.IamacatBlockGame [assemble]" />
+      <item itemvalue="Gradle.IamacatBlockGame [buildDependents]" />
       <item itemvalue="Gradle.IamacatBlockGame [build]" />
+      <item itemvalue="Gradle.IamacatBlockGame [check]" />
     </list>
     <recent_temporary>
       <list>
@@ -276,22 +277,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
-          <line>164</line>
+          <line>171</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
-          <line>169</line>
+          <line>176</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
-          <line>171</line>
+          <line>178</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/fr/iamacat/iamacatblockgame/gamescreen/TestWorldScreen.java</url>
-          <line>184</line>
+          <line>191</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

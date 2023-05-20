@@ -28,6 +28,59 @@ public class WorldGenerator {
         this.chunkLength = chunkLength;
     }
 
+    public Chunk[][] generateChunks(Block[][][] blocks) {
+        int numChunksX = blocks.length / chunkWidth;
+        int numChunksY = blocks[0].length / chunkHeight;
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        AtomicBoolean modelDirty = new AtomicBoolean(false);
+
+        Chunk[][] chunks = new Chunk[numChunksX][numChunksY];
+
+        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
+            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
+                int startX = chunkX * chunkWidth;
+                int startY = chunkY * chunkHeight;
+                int endX = startX + chunkWidth;
+                int endY = startY + chunkHeight;
+
+                List<List<Block>> chunkBlocks = new ArrayList<>();
+                for (int x = startX; x < endX; x++) {
+                    List<Block> row = new ArrayList<>();
+                    for (int y = startY; y < endY; y++) {
+                        for (int z = 0; z < chunkLength; z++) {
+                            row.add(blocks[x][y][z]);
+                        }
+                    }
+                    chunkBlocks.add(row);
+                }
+
+                Chunk chunk = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
+                chunks[chunkX][chunkY] = chunk;
+
+                if (!chunk.isLoaded() && chunk.getLoadingTask() == null) {
+                    chunk.setLoadingTask(executorService.submit(() -> {
+                        // Load and generate the chunk data here
+
+                        // Example: Simulate loading time by sleeping for 2 seconds
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Once the chunk data is loaded, update the loaded flag and mark the model as dirty
+                        chunk.setLoaded(true);
+                        modelDirty.set(true);
+
+                        return null; // Return null explicitly
+                    }));
+                }
+            }
+        }
+
+        return chunks;
+    }
+
     public Block[][][] generateBlocks() {
         ByteBuffer heightMapBuffer = generateHeightMap();
 
@@ -62,71 +115,11 @@ public class WorldGenerator {
                 }
             }
         } finally {
-            executor.shutdown();
-
-            try {
-                // Wait for all tasks to complete
-                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            executor.shutdown(); // Shutdown the executor to release resources
         }
 
         return blocks;
     }
-
-    public Chunk[][] generateChunks(Block[][][] blocks) {
-        int numChunksX = blocks.length / chunkWidth;
-        int numChunksY = blocks[0].length / chunkHeight;
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        AtomicBoolean modelDirty = new AtomicBoolean(false);
-
-        Chunk[][] chunks = new Chunk[numChunksX][numChunksY];
-
-        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
-            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
-                int startX = chunkX * chunkWidth;
-                int startY = chunkY * chunkHeight;
-                int endX = startX + chunkWidth;
-                int endY = startY + chunkHeight;
-
-                List<List<Block>> chunkBlocks = new ArrayList<>();
-                for (int x = startX; x < endX; x++) {
-                    List<Block> row = new ArrayList<>();
-                    for (int y = startY; y < endY; y++) {
-                        row.add(blocks[x][y][0]); // Use the first layer of the block
-                    }
-                    chunkBlocks.add(row);
-                }
-
-                Chunk chunk = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
-                chunks[chunkX][chunkY] = chunk;
-
-                if (!chunk.isLoaded() && chunk.getLoadingTask() == null) {
-                    chunk.setLoadingTask(executorService.submit(() -> {
-                        // Load and generate the chunk data here
-
-                        // Example: Simulate loading time by sleeping for 2 seconds
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        // Once the chunk data is loaded, update the loaded flag and mark the model as dirty
-                        chunk.setLoaded(true);
-                        modelDirty.set(true);
-
-                        return null; // Return null explicitly
-                    }));
-                }
-            }
-        }
-
-        return chunks;
-    }
-
-
 
     private ByteBuffer generateHeightMap() {
         int bufferSize = worldWidth * worldHeight * 4; // 4 bytes per float
