@@ -19,6 +19,10 @@ import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TestWorldScreen;
 import fr.iamacat.iamacatblockgame.player.Player;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class TestWorldScene implements Screen {
     private float viewDistance = 5f; // Initial view distance in chunks
     private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
@@ -55,6 +59,7 @@ public class TestWorldScene implements Screen {
             modelBuilder.begin();
             modelBuilder.node().id = "terrain";
             modelBuilder.part("terrain", GL30.GL_TRIANGLES, Usage.Position | Usage.Normal,
+
                             new Material(ColorAttribute.createDiffuse(Color.GREEN)))
                     .box(TERRAIN_SIZE, 1f, TERRAIN_SIZE);
             terrainModel = modelBuilder.end();
@@ -81,8 +86,7 @@ public class TestWorldScene implements Screen {
 
     @Override
     public void show() {
-        float fieldOfView = FIELD_OF_VIEW;
-        camera = new PerspectiveCamera(fieldOfView, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new PerspectiveCamera(FIELD_OF_VIEW, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(0f, 5f, 10f);
         camera.lookAt(0f, 0f, 0f);
         camera.near = 0.1f;
@@ -117,7 +121,6 @@ public class TestWorldScene implements Screen {
 
         viewDistance = Math.min(viewDistance + viewDistanceIncrement * delta, 32f);
 
-        updateChunkLoading();
         handleInput();
 
         float movementSpeed = MOVEMENT_SPEED;
@@ -175,26 +178,6 @@ public class TestWorldScene implements Screen {
 
     @Override
     public void hide() {}
-
-    private void updateChunkLoading() {
-        Vector3 playerPosition = player.getPosition();
-
-        for (Chunk[] row : chunks) {
-            for (Chunk chunk : row) {
-                if (!chunk.isLoaded() && !chunkIsWithinViewDistance(chunk)) {
-                    chunk.unloadChunk();
-                } else if (chunk.isLoaded() && chunkIsWithinViewDistance(chunk)) {
-                    chunk.createModelInstance(playerPosition, (int) viewDistance);
-                }
-            }
-        }
-    }
-
-    private boolean chunkIsWithinViewDistance(Chunk chunk) {
-        Vector3 center = chunk.getCenterPoint();
-        float distance = player.getPosition().dst(center);
-        return distance <= viewDistance;
-    }
 
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {

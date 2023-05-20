@@ -67,7 +67,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
 
                 // Generate the chunks
                 System.out.println("Generating chunks...");
-                Chunk[][] chunks = worldGenerator.generateChunks(blocks);
+                Chunk[][] chunks = worldGenerator.generateChunks(blocks, System.out);
                 System.out.println("Chunks generated");
 
                 // Create an instance of WorldGeneratorScene and pass the generated chunks
@@ -105,7 +105,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
 
                 // Generate the chunks
                 System.out.println("Generating chunks...");
-                Chunk[][] chunks = worldGenerator.generateChunks(blocks);
+                Chunk[][] chunks = worldGenerator.generateChunks(blocks, System.out);
                 System.out.println("Chunks generated");
 
                 // Pass the initialized chunks array to the TestWorldScene constructor
