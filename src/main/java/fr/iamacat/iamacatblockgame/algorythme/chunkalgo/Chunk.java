@@ -14,20 +14,22 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.List;
+
 public class Chunk implements Screen {
 
-    private boolean loaded; // Flag indicating whether the chunk is loaded or not
+    private boolean loaded;
     private int width;
     private int height;
     private int length;
-    private Block[][] chunkBlocks;
+    private List<List<Block>> chunkBlocks;
     private ModelInstance modelInstance;
     private BitmapFont font;
     private SpriteBatch spriteBatch;
     private boolean modelDirty; // Flag indicating whether the model needs regeneration
     private Model model; // Cached model for the chunk
 
-    public Chunk(int width, int height, int length, int chunkHeight, Block[][] chunkBlocks) {
+    public Chunk(int width, int height, int length, int chunkHeight, List<List<Block>> chunkBlocks) {
         this.width = width;
         this.height = height;
         this.length = length;
@@ -38,12 +40,12 @@ public class Chunk implements Screen {
         font = new BitmapFont();
         spriteBatch = new SpriteBatch();
     }
+
     public ModelInstance getModelInstance() {
         if (modelDirty) {
             Vector3 playerPosition = new Vector3(0, 0, 0);
             int viewDistance = 10;
             createModelInstance(playerPosition, viewDistance);
-
         }
         return modelInstance;
     }
@@ -70,7 +72,7 @@ public class Chunk implements Screen {
         for (int z = startZ; z <= endZ; z++) {
             for (int y = startY; y <= endY; y++) {
                 for (int x = startX; x <= endX; x++) {
-                    Block block = chunkBlocks[x][y];
+                    Block block = chunkBlocks.get(x).get(y);
                     if (block != null) {
                         Vector3 position = new Vector3(x, y, z);
                         meshPartBuilder.setVertexTransform(new Matrix4().trn(position));
@@ -87,6 +89,7 @@ public class Chunk implements Screen {
         modelInstance = new ModelInstance(model);
         modelDirty = false;
     }
+
     private boolean isChunkWithinViewDistance(Vector3 playerPosition, int viewDistance) {
         int startX = Math.max((int) (playerPosition.x - viewDistance), 0);
         int startY = Math.max((int) (playerPosition.y - viewDistance), 0);
@@ -105,17 +108,16 @@ public class Chunk implements Screen {
             return; // Chunk is already unloaded
         }
 
+        modelInstance.model.dispose();
         modelInstance = null; // Set the model instance to null
 
         // Dispose of blocks and associated resources
         for (int z = 0; z < length; z++) {
             for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    Block block = chunkBlocks[x][y];
-                    if (block != null) {
-                        block.dispose();
-                        chunkBlocks[x][y] = null;
-                    }
+                Block block = chunkBlocks.get(z).get(y);
+                if (block != null) {
+                    block.dispose();
+                    chunkBlocks.get(z).set(y, null);
                 }
             }
         }
@@ -146,7 +148,7 @@ public class Chunk implements Screen {
 
     public float getBlockHeight(int x, int y, int z) {
         if (isValidBlockCoordinate(x, y, z)) {
-            Block block = chunkBlocks[x][y];
+            Block block = chunkBlocks.get(x).get(y);
             return block != null ? block.getHeight() : 0.0f;
         }
         return 0.0f;
@@ -154,12 +156,12 @@ public class Chunk implements Screen {
 
     public void setBlockHeight(int x, int y, int z, float height) {
         if (isValidBlockCoordinate(x, y, z)) {
-            Block block = chunkBlocks[x][y];
+            Block block = chunkBlocks.get(x).get(y);
             if (block != null) {
                 block.setHeight(height);
             } else {
                 block = new Block(height);
-                chunkBlocks[x][y] = block;
+                chunkBlocks.get(x).set(y, block);
             }
             modelDirty = true; // Mark the model as dirty when a block's height changes
         }
@@ -195,20 +197,34 @@ public class Chunk implements Screen {
     }
 
     public void dispose() {
-        modelInstance.model.dispose();
+        if (modelInstance != null) {
+            modelInstance.model.dispose();
+            modelInstance = null;
+        }
+
         // Dispose of blocks and associated resources
         for (int z = 0; z < length; z++) {
             for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    Block block = chunkBlocks[x][y];
-                    if (block != null) {
-                        block.dispose();
-                    }
+                Block block = chunkBlocks.get(z).get(y);
+                if (block != null) {
+                    block.dispose();
+                    chunkBlocks.get(z).set(y, null);
                 }
             }
         }
         chunkBlocks = null;
+
+        if (font != null) {
+            font.dispose();
+            font = null;
+        }
+
+        if (spriteBatch != null) {
+            spriteBatch.dispose();
+            spriteBatch = null;
+        }
     }
+
 
     private int getIndex(int x, int y, int z) {
         return x + y * width + z * width * height;

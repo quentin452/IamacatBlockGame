@@ -84,7 +84,7 @@ public class PlayButtonScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Create an instance of WorldGenerator
-                WorldGenerator worldGenerator = new WorldGenerator(1000, 1000, 16, 16, 64);
+                WorldGenerator worldGenerator = new WorldGenerator(256, 256, 16, 16, 64);
 
                 // Generate the blocks
                 System.out.println("Generating blocks...");

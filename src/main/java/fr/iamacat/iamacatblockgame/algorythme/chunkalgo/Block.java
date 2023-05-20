@@ -15,7 +15,7 @@ public class Block {
     public Block(float height) {
         this.height = height;
         // Load the texture or any other resources needed
-       // System.out.println("Loading texture: textures/blocks/block_texture.png");
+        // System.out.println("Loading texture: textures/blocks/block_texture.png");
         texture = new Texture("textures/blocks/block_texture.png");
 
         // Create the 3D model for the block

@@ -5,6 +5,8 @@ import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -84,11 +86,13 @@ public class WorldGenerator {
                 int endX = startX + chunkWidth;
                 int endY = startY + chunkHeight;
 
-                Block[][] chunkBlocks = new Block[chunkWidth][chunkHeight];
+                List<List<Block>> chunkBlocks = new ArrayList<>();
                 for (int x = startX; x < endX; x++) {
+                    List<Block> row = new ArrayList<>();
                     for (int y = startY; y < endY; y++) {
-                        chunkBlocks[x - startX][y - startY] = blocks[x][y][0]; // Use the first layer of the block
+                        row.add(blocks[x][y][0]); // Use the first layer of the block
                     }
+                    chunkBlocks.add(row);
                 }
 
                 chunks[chunkX][chunkY] = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
@@ -97,6 +101,7 @@ public class WorldGenerator {
 
         return chunks;
     }
+
 
     private ByteBuffer generateHeightMap() {
         int bufferSize = worldWidth * worldHeight * 4; // 4 bytes per float

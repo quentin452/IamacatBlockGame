@@ -22,7 +22,7 @@ import fr.iamacat.iamacatblockgame.player.Player;
 
 public class TestWorldScene implements Screen {
 
-    private float viewDistance = 2f; // Initial view distance in chunks
+    private float viewDistance = 2f; // Initial view distance in chunks , IMPORTANT VALUE
     private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
 
     private SpriteBatch batch;
