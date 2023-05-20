@@ -73,14 +73,19 @@ public class WorldGenerator {
         return blocks;
     }
 
-    public Chunk[][] generateChunks(Block[][][] blocks) {
+    public Chunk[][] generateChunks(Block[][][] blocks, int viewDistance, int playerChunkX, int playerChunkY) {
         int numChunksX = blocks.length / chunkWidth;
         int numChunksY = blocks[0].length / chunkHeight;
 
-        Chunk[][] chunks = new Chunk[numChunksX][numChunksY];
+        int startChunkX = MathUtils.clamp(playerChunkX - viewDistance, 0, numChunksX - 1);
+        int endChunkX = MathUtils.clamp(playerChunkX + viewDistance, 0, numChunksX - 1);
+        int startChunkY = MathUtils.clamp(playerChunkY - viewDistance, 0, numChunksY - 1);
+        int endChunkY = MathUtils.clamp(playerChunkY + viewDistance, 0, numChunksY - 1);
 
-        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
-            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
+        Chunk[][] chunks = new Chunk[endChunkX - startChunkX + 1][endChunkY - startChunkY + 1];
+
+        for (int chunkX = startChunkX; chunkX <= endChunkX; chunkX++) {
+            for (int chunkY = startChunkY; chunkY <= endChunkY; chunkY++) {
                 int startX = chunkX * chunkWidth;
                 int startY = chunkY * chunkHeight;
                 int endX = startX + chunkWidth;
@@ -95,13 +100,12 @@ public class WorldGenerator {
                     chunkBlocks.add(row);
                 }
 
-                chunks[chunkX][chunkY] = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
+                chunks[chunkX - startChunkX][chunkY - startChunkY] = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
             }
         }
 
         return chunks;
     }
-
 
     private ByteBuffer generateHeightMap() {
         int bufferSize = worldWidth * worldHeight * 4; // 4 bytes per float

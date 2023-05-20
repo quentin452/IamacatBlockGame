@@ -15,14 +15,13 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Block;
 import fr.iamacat.iamacatblockgame.algorythme.chunkalgo.Chunk;
 import fr.iamacat.iamacatblockgame.gamescreen.TestWorldScreen;
 import fr.iamacat.iamacatblockgame.player.Player;
 
 public class TestWorldScene implements Screen {
 
-    private float viewDistance = 2f; // Initial view distance in chunks , IMPORTANT VALUE
+    private float viewDistance = 5f; // Initial view distance in chunks , IMPORTANT VALUE
     private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
 
     private SpriteBatch batch;
