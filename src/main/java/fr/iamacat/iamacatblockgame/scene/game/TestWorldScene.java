@@ -23,7 +23,6 @@ public class TestWorldScene implements Screen {
 
     private float viewDistance = 5f; // Initial view distance in chunks , IMPORTANT VALUE
     private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
-
     private SpriteBatch batch;
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
@@ -128,7 +127,9 @@ public class TestWorldScene implements Screen {
         // Update the view distance over time
         elapsedTime += delta;
         viewDistance = Math.min(viewDistance + viewDistanceIncrement * elapsedTime, 32f);
+        // Update the chunk loading based on the player's position and view distance
 
+        updateChunkLoading();
         // Update the view distance for each chunk
         for (Chunk[] row : chunks) {
             for (Chunk chunk : row) {
@@ -201,7 +202,16 @@ public class TestWorldScene implements Screen {
         modelBatch.render(otherObject, environment);
         modelBatch.end();
     }
+    private void updateChunkLoading() {
+        Vector3 playerPosition = player.getPosition();
+        int currentViewDistance = (int) viewDistance;
 
+        for (Chunk[] row : chunks) {
+            for (Chunk chunk : row) {
+                chunk.createModelInstance(playerPosition, currentViewDistance);
+            }
+        }
+    }
     @Override
     public void resize(int width, int height) {
 

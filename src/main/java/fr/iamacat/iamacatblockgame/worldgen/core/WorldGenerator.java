@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WorldGenerator {
     private final int worldWidth;
@@ -73,19 +75,16 @@ public class WorldGenerator {
         return blocks;
     }
 
-    public Chunk[][] generateChunks(Block[][][] blocks, int viewDistance, int playerChunkX, int playerChunkY) {
+    public Chunk[][] generateChunks(Block[][][] blocks) {
         int numChunksX = blocks.length / chunkWidth;
         int numChunksY = blocks[0].length / chunkHeight;
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        AtomicBoolean modelDirty = new AtomicBoolean(false);
 
-        int startChunkX = MathUtils.clamp(playerChunkX - viewDistance, 0, numChunksX - 1);
-        int endChunkX = MathUtils.clamp(playerChunkX + viewDistance, 0, numChunksX - 1);
-        int startChunkY = MathUtils.clamp(playerChunkY - viewDistance, 0, numChunksY - 1);
-        int endChunkY = MathUtils.clamp(playerChunkY + viewDistance, 0, numChunksY - 1);
+        Chunk[][] chunks = new Chunk[numChunksX][numChunksY];
 
-        Chunk[][] chunks = new Chunk[endChunkX - startChunkX + 1][endChunkY - startChunkY + 1];
-
-        for (int chunkX = startChunkX; chunkX <= endChunkX; chunkX++) {
-            for (int chunkY = startChunkY; chunkY <= endChunkY; chunkY++) {
+        for (int chunkX = 0; chunkX < numChunksX; chunkX++) {
+            for (int chunkY = 0; chunkY < numChunksY; chunkY++) {
                 int startX = chunkX * chunkWidth;
                 int startY = chunkY * chunkHeight;
                 int endX = startX + chunkWidth;
@@ -100,12 +99,34 @@ public class WorldGenerator {
                     chunkBlocks.add(row);
                 }
 
-                chunks[chunkX - startChunkX][chunkY - startChunkY] = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
+                Chunk chunk = new Chunk(chunkX, chunkY, chunkWidth, chunkHeight, chunkBlocks);
+                chunks[chunkX][chunkY] = chunk;
+
+                if (!chunk.isLoaded() && chunk.getLoadingTask() == null) {
+                    chunk.setLoadingTask(executorService.submit(() -> {
+                        // Load and generate the chunk data here
+
+                        // Example: Simulate loading time by sleeping for 2 seconds
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Once the chunk data is loaded, update the loaded flag and mark the model as dirty
+                        chunk.setLoaded(true);
+                        modelDirty.set(true);
+
+                        return null; // Return null explicitly
+                    }));
+                }
             }
         }
 
         return chunks;
     }
+
+
 
     private ByteBuffer generateHeightMap() {
         int bufferSize = worldWidth * worldHeight * 4; // 4 bytes per float

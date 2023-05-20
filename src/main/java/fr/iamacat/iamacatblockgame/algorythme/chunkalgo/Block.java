@@ -39,6 +39,5 @@ public class Block {
 
     public void dispose() {
         texture.dispose();
-        System.out.println("Block resources disposed.");
     }
 }

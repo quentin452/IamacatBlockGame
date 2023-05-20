@@ -65,14 +65,9 @@ public class PlayButtonScreen implements Screen, InputProcessor {
                 Block[][][] blocks = worldGenerator.generateBlocks();
                 System.out.println("Blocks generated");
 
-                // Define the view distance and player chunk coordinates
-                int viewDistance = 5;
-                int playerChunkX = 0;
-                int playerChunkY = 0;
-
                 // Generate the chunks
                 System.out.println("Generating chunks...");
-                Chunk[][] chunks = worldGenerator.generateChunks(blocks, viewDistance, playerChunkX, playerChunkY);
+                Chunk[][] chunks = worldGenerator.generateChunks(blocks);
                 System.out.println("Chunks generated");
 
                 // Create an instance of WorldGeneratorScene and pass the generated chunks
@@ -89,23 +84,17 @@ public class PlayButtonScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Create an instance of WorldGenerator
-                WorldGenerator worldGenerator = new WorldGenerator(256, 256, 16, 16, 64);
+                WorldGenerator worldGenerator = new WorldGenerator(256, 256, 16, 16, 16);
 
                 // Generate the blocks
                 System.out.println("Generating blocks...");
                 Block[][][] blocks = worldGenerator.generateBlocks();
                 System.out.println("Blocks generated");
 
-                // Define the view distance and player chunk coordinates
-                int viewDistance = 5;
-                int playerChunkX = 0;
-                int playerChunkY = 0;
-
                 // Generate the chunks
                 System.out.println("Generating chunks...");
-                Chunk[][] chunks = worldGenerator.generateChunks(blocks, viewDistance, playerChunkX, playerChunkY);
+                Chunk[][] chunks = worldGenerator.generateChunks(blocks);
                 System.out.println("Chunks generated");
-
 
                 // Pass the initialized chunks array to the TestWorldScene constructor
                 TestWorldScene testscene = new TestWorldScene(batch, chunks);

@@ -15,6 +15,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Chunk implements Screen {
 
@@ -28,6 +31,7 @@ public class Chunk implements Screen {
     private SpriteBatch spriteBatch;
     private boolean modelDirty; // Flag indicating whether the model needs regeneration
     private Model model; // Cached model for the chunk
+    private Future<Void> loadingTask; // Task for loading the chunk asynchronously
 
     public Chunk(int width, int height, int length, int chunkHeight, List<List<Block>> chunkBlocks) {
         this.width = width;
@@ -81,6 +85,7 @@ public class Chunk implements Screen {
                 }
             }
         }
+        // Add the following check to skip generating the model if the chunk is outside the view distance
         if (!isChunkWithinViewDistance(playerPosition, viewDistance)) {
             unloadChunk();
             return;
@@ -123,6 +128,21 @@ public class Chunk implements Screen {
         }
 
         loaded = false; // Set the loaded flag to false
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public Future<Void> getLoadingTask() {
+        return loadingTask;
+    }
+
+    public void setLoadingTask(Future<Void> loadingTask) {
+        this.loadingTask = loadingTask;
+    }
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 
     @Override
