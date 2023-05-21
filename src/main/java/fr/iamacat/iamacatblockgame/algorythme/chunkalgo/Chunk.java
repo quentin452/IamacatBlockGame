@@ -26,25 +26,25 @@ public class Chunk {
     private int chunkY;
     private List<List<Block>> chunkBlocks;
     private ModelInstance modelInstance;
+    private boolean modelDirty;
+    private Model model;
+    private Future<Void> loadingTask;
     private BitmapFont font;
     private SpriteBatch spriteBatch;
-    private boolean modelDirty; // Flag indicating whether the model needs regeneration
-    private Model model; // Cached model for the chunk
-    private Future<Void> loadingTask; // Task for loading the chunk asynchronously
 
-    public Chunk(int width, int height, int length, int chunkHeight, int chunkY, List<List<Block>> chunkBlocks) {
-        this.chunkX = chunkX;
-        this.chunkY = this.chunkY;
+    public Chunk(int width, int height, int length, int chunkX, int chunkY, List<List<Block>> chunkBlocks) {
         this.width = width;
         this.height = height;
         this.length = length;
+        this.chunkX = chunkX;
+        this.chunkY = chunkY;
         this.chunkBlocks = chunkBlocks;
         this.loaded = false;
         this.modelDirty = true;
-        // Create font and sprite batch for the screen
-        font = new BitmapFont();
-        spriteBatch = new SpriteBatch();
+        this.font = new BitmapFont();
+        this.spriteBatch = new SpriteBatch();
     }
+
     public int getChunkX() {
         return chunkX;
     }
@@ -52,6 +52,7 @@ public class Chunk {
     public int getChunkY() {
         return chunkY;
     }
+
     public ModelInstance getModelInstance() {
         if (modelInstance == null) {
             Vector3 playerPosition = new Vector3(0, 0, 0);
@@ -118,23 +119,21 @@ public class Chunk {
         int endY = Math.min((int) (playerPosition.y + viewDistance), height - 1);
         int endZ = Math.min((int) (playerPosition.z + viewDistance), length - 1);
 
-        // Check if any corner of the chunk is within the view distance
         return startX <= endX && startY <= endY && startZ <= endZ;
     }
 
     public void unloadChunk() {
         if (!loaded) {
-            return; // Chunk is already unloaded
+            return;
         }
         if (loadingTask != null && !loadingTask.isDone()) {
             loadingTask.cancel(true);
         }
         if (modelInstance != null) {
             modelInstance.model.dispose();
-            modelInstance = null; // Set the model instance to null
+            modelInstance = null;
         }
 
-        // Dispose of blocks and associated resources
         for (List<Block> row : chunkBlocks) {
             for (Block block : row) {
                 if (block != null) {
@@ -144,8 +143,8 @@ public class Chunk {
             row.clear();
         }
 
-        loaded = false; // Set the loaded flag to false
-        modelDirty = false; // Set the model dirty flag to false
+        loaded = false;
+        modelDirty = false;
     }
 
     public boolean isLoaded() {
@@ -195,19 +194,20 @@ public class Chunk {
             if (block != null) {
                 if (block.getHeight() != height) {
                     block.setHeight(height);
-                    modelDirty = true; // Mark the model as dirty
-
+                    modelDirty = true;
                 }
             } else {
                 block = new Block(height);
                 row.set(x, block);
-                modelDirty = true; // Mark the model as dirty
+                modelDirty = true;
             }
         }
     }
+
     private boolean isValidBlockCoordinate(int x, int y, int z) {
-        // Limit the block coordinates to within the desired world width and height
-        return x >= 0 && x < WorldSettings.DESIRED_WORLD_WIDTH && y >= 0 && y < WorldSettings.DESIRED_WORLD_HEIGHT && z >= 0 && z < length;
+        return x >= 0 && x < WorldSettings.DESIRED_WORLD_WIDTH &&
+                y >= 0 && y < WorldSettings.DESIRED_WORLD_HEIGHT &&
+                z >= 0 && z < length;
     }
 
     public void dispose() {
@@ -216,7 +216,6 @@ public class Chunk {
             modelInstance = null;
         }
 
-        // Dispose of blocks and associated resources
         for (List<Block> row : chunkBlocks) {
             for (Block block : row) {
                 if (block != null) {
@@ -226,7 +225,6 @@ public class Chunk {
             row.clear();
         }
         chunkBlocks = null;
-
 
         if (font != null) {
             font.dispose();

@@ -25,7 +25,7 @@ import java.util.concurrent.Future;
 
 public class TestWorldScene implements Screen {
     private float viewDistance = 5f; // Initial view distance in chunks
-    private float viewDistanceIncrement = 1f; // Amount to increase view distance per second
+    private float viewDistanceIncrement = 0.5f; // Amount to increase view distance per second
 
     private static final float TERRAIN_SIZE = 10f;
     private static final float MOVEMENT_SPEED = 5f;
@@ -47,7 +47,6 @@ public class TestWorldScene implements Screen {
     public TestWorldScene(SpriteBatch batch, Chunk[][] chunks) {
         this.batch = batch;
         this.chunks = chunks;
-        create();
     }
 
     private void create() {
@@ -59,7 +58,6 @@ public class TestWorldScene implements Screen {
             modelBuilder.begin();
             modelBuilder.node().id = "terrain";
             modelBuilder.part("terrain", GL30.GL_TRIANGLES, Usage.Position | Usage.Normal,
-
                             new Material(ColorAttribute.createDiffuse(Color.GREEN)))
                     .box(TERRAIN_SIZE, 1f, TERRAIN_SIZE);
             terrainModel = modelBuilder.end();
@@ -95,6 +93,8 @@ public class TestWorldScene implements Screen {
 
         player = new Player(new Vector3(0f, 0f, 0f));
         player.setPosition(0f, 0f, 0f);
+
+        create(); // Call create() after initializing the player object
 
         modelBatch = new ModelBatch();
         environment = createEnvironment();
